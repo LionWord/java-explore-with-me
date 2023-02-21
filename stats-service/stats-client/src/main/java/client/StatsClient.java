@@ -1,3 +1,6 @@
+package client;
+
+import dto.EndpointHit;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
@@ -36,7 +39,7 @@ public class StatsClient extends BasicClient {
         if (uris != null & uris.length > 0) {
             params.put("uris", uris);
         }
-        if (isUnique == true){
+        if (isUnique){
             params.put("unique", isUnique);
         }
 

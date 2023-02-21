@@ -1,3 +1,7 @@
+package server;
+
+import dto.EndpointHit;
+import dto.ViewStats;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

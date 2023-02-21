@@ -1,3 +1,8 @@
+package server;
+
+import dto.EndpointHit;
+import dto.ViewStats;
+
 import java.util.List;
 
 public interface StatsServerService {
