@@ -1,13 +1,13 @@
-package com.lionword.statsservice;
+package com.lionword;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class StatsServiceApplication {
+public class StatsServerApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(StatsServiceApplication.class, args);
+        SpringApplication.run(StatsServerApplication.class, args);
     }
 
 }
