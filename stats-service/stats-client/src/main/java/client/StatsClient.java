@@ -11,6 +11,7 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 import javax.servlet.http.HttpServletRequest;
 import java.time.Clock;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 @Service
@@ -35,17 +36,16 @@ public class StatsClient extends BasicClient {
     }
 
     public ResponseEntity<Object> getStats(String start, String end, String[] uris, boolean isUnique) {
-        Map<String, Object> params = Map.of("start", start, "end", end);
-        if (uris != null & uris.length > 0) {
+        Map<String, Object> params = new HashMap<>(Map.of("start", start, "end", end));
+        if (uris != null) {
             params.put("uris", uris);
         }
-        if (isUnique){
+        if (isUnique) {
             params.put("unique", true);
         }
 
         return get("/stats", params);
     }
-
 
 
 }

@@ -11,7 +11,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 public class ErrorHandler {
 
     @ExceptionHandler({TimeParamsException.class,
-                    MethodArgumentTypeMismatchException.class})
+            MethodArgumentTypeMismatchException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ExceptionMessage handleTimeRelatedException(RuntimeException e) {
         return new ExceptionMessage(e.getMessage());

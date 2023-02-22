@@ -14,10 +14,11 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class StatsServerServiceImpl implements StatsServerService{
+public class StatsServerServiceImpl implements StatsServerService {
 
     private final StatsServerRepo repo;
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
     @Override
     public List<ViewStats> getStats(String start, String end, String[] uris, boolean isUnique) {
         LocalDateTime startDate = LocalDateTime.parse(start, formatter);
@@ -33,8 +34,7 @@ public class StatsServerServiceImpl implements StatsServerService{
         } else if (uris != null & !isUnique) {
             hitsList = repo.getAllNonDistinctEntriesInTimeRange(startDate, endDate);
             return getStatsForUris(hitsList, uris);
-        }
-        else if (isUnique) {
+        } else if (isUnique) {
             return repo.getAllDistinctEntriesInTimeRange(startDate, endDate);
         } else {
             return repo.getAllNonDistinctEntriesInTimeRange(startDate, endDate);
