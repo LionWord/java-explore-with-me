@@ -40,7 +40,7 @@ public class StatsClient extends BasicClient {
             params.put("uris", uris);
         }
         if (isUnique){
-            params.put("unique", isUnique);
+            params.put("unique", true);
         }
 
         return get("/stats", params);

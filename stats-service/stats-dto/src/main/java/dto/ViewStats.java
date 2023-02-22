@@ -1,11 +1,7 @@
 package dto;
 
-import lombok.Data;
-
-@Data
-public class ViewStats {
-
-    String app;
-    String uri;
-    Long hits;
+public interface ViewStats {
+    String getApp();
+    String getUri();
+    String getHits();
 }
