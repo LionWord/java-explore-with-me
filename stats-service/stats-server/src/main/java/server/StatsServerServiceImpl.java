@@ -27,16 +27,16 @@ public class StatsServerServiceImpl implements StatsServerService {
         }
         List<ViewStats> hitsList;
 
-        if (uris != null & isUnique) {
+        if (isUnique) {
             hitsList = repo.getAllDistinctEntriesInTimeRange(startDate, endDate);
-            return getStatsForUris(hitsList, uris);
-        } else if (uris != null & !isUnique) {
-            hitsList = repo.getAllNonDistinctEntriesInTimeRange(startDate, endDate);
-            return getStatsForUris(hitsList, uris);
-        } else if (isUnique) {
-            return repo.getAllDistinctEntriesInTimeRange(startDate, endDate);
         } else {
-            return repo.getAllNonDistinctEntriesInTimeRange(startDate, endDate);
+            hitsList = repo.getAllNonDistinctEntriesInTimeRange(startDate, endDate);
+        }
+
+        if (uris == null || uris.isEmpty()) {
+            return hitsList;
+        } else {
+            return getStatsForUris(hitsList, uris);
         }
     }
 
