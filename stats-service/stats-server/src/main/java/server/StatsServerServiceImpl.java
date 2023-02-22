@@ -20,7 +20,7 @@ public class StatsServerServiceImpl implements StatsServerService {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
-    public List<ViewStats> getStats(String start, String end, String[] uris, boolean isUnique) {
+    public List<ViewStats> getStats(String start, String end, List<String> uris, boolean isUnique) {
         LocalDateTime startDate = LocalDateTime.parse(start, formatter);
         LocalDateTime endDate = LocalDateTime.parse(end, formatter);
         if (startDate.isAfter(endDate)) {
@@ -46,9 +46,9 @@ public class StatsServerServiceImpl implements StatsServerService {
         repo.save(hit);
     }
 
-    private List<ViewStats> getStatsForUris(List<ViewStats> hitsList, String[] uris) {
+    private List<ViewStats> getStatsForUris(List<ViewStats> hitsList, List<String> uris) {
         return hitsList.stream()
-                .filter(viewStats -> Arrays.asList(uris).contains(viewStats.getUri()))
+                .filter(viewStats -> uris.contains(viewStats.getUri()))
                 .collect(Collectors.toList());
     }
 

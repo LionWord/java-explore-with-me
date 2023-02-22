@@ -23,7 +23,7 @@ public class StatsHttpServerController {
     @GetMapping("/stats")
     public List<ViewStats> getStats(@RequestParam(name = "start") String start,
                                     @RequestParam(name = "end") String end,
-                                    @RequestParam(name = "uris", required = false) String[] uris,
+                                    @RequestParam(name = "uris", required = false) List<String> uris,
                                     @RequestParam(name = "unique", required = false, defaultValue = "false") boolean isUnique) {
         return service.getStats(start, end, uris, isUnique);
     }
