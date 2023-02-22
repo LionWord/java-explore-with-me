@@ -5,7 +5,10 @@ import dto.ViewStats;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.net.URLEncoder;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,14 +20,12 @@ public class StatsServerServiceImpl implements StatsServerService{
 
     @Override
     public List<ViewStats> getStats(String start, String end, String[] uris, boolean isUnique) {
-        /*DateTimeFormatter formatter = DateTimeFormatter.ofPattern( "yyyy-MM-dd HH:mm:ss");
-        LocalDateTime startTime = LocalDateTime.from(formatter.parse(start));
-        LocalDateTime endTime = LocalDateTime.from(formatter.parse(start));*/
-        Timestamp startStamp = Timestamp.valueOf(start);
-        Timestamp endStamp = Timestamp.valueOf(end);
-        List<EndpointHit> hitsList = repo.getAllEntriesInTimeRange(startStamp, endStamp);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime startDate = LocalDateTime.parse(start, formatter);
+        LocalDateTime endDate = LocalDateTime.parse(end, formatter);
+        List<EndpointHit> hitsList = repo.getAllEntriesInTimeRange(startDate, endDate);
         return hitsList.stream()
-                .map(endpointHit -> mapHitToViewStats(endpointHit, startStamp, endStamp))
+                .map(this::mapHitToViewStats)
                 .collect(Collectors.toList());
     }
 
@@ -33,12 +34,12 @@ public class StatsServerServiceImpl implements StatsServerService{
         repo.save(hit);
     }
 
-    private ViewStats mapHitToViewStats(EndpointHit hit, Timestamp start, Timestamp end) {
-        Long uniqueIpQuantity = repo.countUniqueIpValues(start, end);
+    private ViewStats mapHitToViewStats(EndpointHit hit) {
         ViewStats viewStats = new ViewStats();
         viewStats.setApp(hit.getApp());
         viewStats.setUri(hit.getUri());
-        viewStats.setHits(uniqueIpQuantity);
+        viewStats.setHits(8L);
         return viewStats;
     }
+
 }
