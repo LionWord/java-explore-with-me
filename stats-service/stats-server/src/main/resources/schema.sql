@@ -9,3 +9,8 @@ create table if not exists endpoint_hit
     ip        varchar(39),
     timestamp timestamp
 );
+
+delete from endpoint_hit;
+alter table endpoint_hit
+alter column id
+restart; 
