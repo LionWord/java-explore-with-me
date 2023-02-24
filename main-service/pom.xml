@@ -10,8 +10,16 @@
     <groupId>com.lionword</groupId>
     <artifactId>main-service</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
     <name>main-service</name>
     <description>main-service</description>
+    <modules>
+        <module>main-admin</module>
+        <module>main-private</module>
+        <module>main-public</module>
+        <module>main-auth</module>
+        <module>main-entity</module>
+    </modules>
     <properties>
         <java.version>11</java.version>
     </properties>
