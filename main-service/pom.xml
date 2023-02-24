@@ -19,6 +19,7 @@
         <module>main-public</module>
         <module>main-auth</module>
         <module>main-entity</module>
+        <module>main-validation</module>
     </modules>
     <properties>
         <java.version>11</java.version>
