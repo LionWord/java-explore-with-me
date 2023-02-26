@@ -7,5 +7,5 @@ public class ParticipationRequestDto {
     private LocalDateTime created;
     private long event;
     private long requester;
-    private RequestState state;
+    private RequestState status;
 }

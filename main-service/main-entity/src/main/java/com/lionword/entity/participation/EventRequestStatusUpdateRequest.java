@@ -4,5 +4,5 @@ import java.util.List;
 
 public class EventRequestStatusUpdateRequest {
     private List<Long> requestIds;
-    private RequestState state;
+    private RequestState status;
 }

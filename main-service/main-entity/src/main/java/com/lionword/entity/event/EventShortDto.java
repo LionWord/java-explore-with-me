@@ -4,15 +4,15 @@ import com.lionword.entity.category.CategoryDto;
 import com.lionword.entity.user.UserShortDto;
 import java.time.LocalDateTime;
 
-//Проекция
-public interface EventShortDto {
-    long getId();
-    String getAnnotation() ;
-    CategoryDto getCategory();
-    long getConfirmedRequests();
-    LocalDateTime getEventDate();
-    UserShortDto getInitiator();
-    Boolean getPaid();
-    String getTitle();
-    long getViews();
+
+public class EventShortDto {
+    private long id;
+    private String annotation;
+    private CategoryDto category;
+    private long confirmedRequests;
+    private LocalDateTime eventDate;
+    private UserShortDto initiator;
+    private Boolean paid;
+    private String title;
+    private long views;
 }
