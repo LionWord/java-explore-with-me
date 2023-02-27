@@ -1,5 +1,7 @@
 package com.lionword.entity.participation;
 
+import org.springframework.data.annotation.ReadOnlyProperty;
+
 import javax.persistence.*;
 import java.time.LocalDateTime;
 @Entity
@@ -16,5 +18,6 @@ public class ParticipationRequestDto {
     @Column(name = "requester")
     private long requester;
     @Column(name = "status")
+    @Enumerated(EnumType.STRING)
     private RequestState status;
 }
