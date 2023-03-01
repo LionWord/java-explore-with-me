@@ -21,19 +21,19 @@ public class AdminUserController {
                                   @RequestParam(name = "from", defaultValue = "0") int from,
                                   @RequestParam(name = "from", defaultValue = "10") int size) {
         //stub
-        return List.of();
+        return adminUserService.getUsers(ids, from, size);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto createUser(@RequestBody UserDto user) {
         //stub
-        return new UserDto();
+        return adminUserService.createUser(user);
     }
 
     @DeleteMapping("/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable long userId) {
-        //stub
+        adminUserService.deleteUser(userId);
     }
 }

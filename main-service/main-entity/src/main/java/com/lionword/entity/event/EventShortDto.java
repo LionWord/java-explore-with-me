@@ -2,9 +2,15 @@ package com.lionword.entity.event;
 
 import com.lionword.entity.category.CategoryDto;
 import com.lionword.entity.user.UserShortDto;
+import lombok.*;
+
 import java.time.LocalDateTime;
 
-
+@Getter
+@Setter
+@EqualsAndHashCode
+@RequiredArgsConstructor
+@NoArgsConstructor
 public class EventShortDto {
     private long id;
     private String annotation;
