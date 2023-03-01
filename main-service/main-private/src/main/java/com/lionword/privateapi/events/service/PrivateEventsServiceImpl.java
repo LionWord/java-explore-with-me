@@ -45,8 +45,8 @@ public class PrivateEventsServiceImpl {
     }
 
     public EventFullDto updateEvent(long userId, long eventId, UpdateEventUserRequest updateEvent) {
-        EventFullDto updatedEvent = repo.findByIdAndInitiatorId(eventId, userId);
-
+        EventFullDto event = repo.findByIdAndInitiatorId(eventId, userId);
+        return repo.save(updateEvent(event, updateEvent));
     }
 
 
@@ -89,7 +89,7 @@ public class PrivateEventsServiceImpl {
         if (newInfo.getTitle() != null) {
             updatedEvent.setTitle(newInfo.getTitle());
         }
-        return repo.save(updatedEvent);
+        return updatedEvent;
     }
 
 }
