@@ -1,9 +1,11 @@
 package com.lionword.entity.event;
 
 import com.lionword.entity.location.Location;
+import lombok.*;
 
 import java.time.LocalDateTime;
-
+@Getter
+@Setter
 public class UpdateEventUserRequest {
     //minmax
     private String annotation;

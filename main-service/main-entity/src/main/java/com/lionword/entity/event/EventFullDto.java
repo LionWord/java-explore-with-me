@@ -4,12 +4,16 @@ import com.lionword.entity.category.CategoryDto;
 import com.lionword.entity.location.Location;
 import com.lionword.entity.user.UserDto;
 import com.lionword.entity.user.UserShortDto;
-import lombok.NonNull;
+import lombok.*;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-
+@Getter
+@Setter
+@EqualsAndHashCode
+@RequiredArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "events")
 public class EventFullDto {

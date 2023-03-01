@@ -17,8 +17,8 @@ import java.util.List;
 public class PrivateEventsController {
 
     @GetMapping
-    public List<EventShortDto> getEvents(@RequestParam(name = "from", required = false) String from,
-                                         @RequestParam(name = "size", required = false) String size,
+    public List<EventShortDto> getEvents(@RequestParam(name = "from", required = false) int from,
+                                         @RequestParam(name = "size", required = false) int size,
                                          @PathVariable long userId) {
         //stub
         return List.of();
@@ -26,7 +26,7 @@ public class PrivateEventsController {
 
     /*Обратите внимание: дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента*/
     @PostMapping
-    public EventFullDto addEvent(@PathVariable long userId, @RequestBody EventShortDto event) {
+    public EventFullDto addEvent(@PathVariable long userId, @RequestBody EventFullDto event) {
         //stub
         return null;
     }
