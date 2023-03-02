@@ -1,9 +1,15 @@
 package com.lionword.entity.participation;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+@Getter
+@Setter
+@RequiredArgsConstructor
 @Entity
 @Table(name = "participation_requests")
 public class ParticipationRequestDto {
