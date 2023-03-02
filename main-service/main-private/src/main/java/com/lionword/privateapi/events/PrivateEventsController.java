@@ -62,7 +62,7 @@ public class PrivateEventsController {
     если при подтверждении данной заявки, лимит заявок для события исчерпан, то все неподтверждённые заявки необходимо отклонить*/
     @PatchMapping("/{eventId}/requests")
     public EventRequestStatusUpdateResult changeRequestStatus(@PathVariable long userId, @PathVariable long eventId,
-                                                              @RequestBody EventRequestStatusUpdateRequest updateRequest) {
+                                                              @RequestBody EventRequestStatusUpdateRequest updateRequestStatus) {
         //stub
         return null;
     }
