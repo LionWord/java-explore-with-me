@@ -1,4 +1,4 @@
-package com.lionword.privateapi.events.repository;
+package com.lionword.privateapi.repository.limitedparents;
 
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;

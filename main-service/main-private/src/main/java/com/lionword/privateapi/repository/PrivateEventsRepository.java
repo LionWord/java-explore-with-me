@@ -1,4 +1,4 @@
-package com.lionword.privateapi.events.repository;
+package com.lionword.privateapi.repository;
 
 import com.lionword.entity.event.EventFullDto;
 import org.springframework.data.domain.Page;
@@ -11,4 +11,5 @@ public interface PrivateEventsRepository extends JpaRepository<EventFullDto, Lon
 
     Page<EventFullDto> findAllByInitiatorId(long initiatorId, Pageable pageable);
     EventFullDto findByIdAndInitiatorId(long eventId, long initiatorId);
+
 }
