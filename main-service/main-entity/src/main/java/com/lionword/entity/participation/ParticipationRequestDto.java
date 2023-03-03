@@ -25,5 +25,5 @@ public class ParticipationRequestDto {
     private long requester;
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private RequestState status;
+    private RequestState status = RequestState.PENDING;
 }
