@@ -6,6 +6,7 @@ import com.lionword.entity.event.UpdateEventUserRequest;
 import com.lionword.entity.participation.EventRequestStatusUpdateRequest;
 import com.lionword.entity.participation.EventRequestStatusUpdateResult;
 import com.lionword.entity.participation.ParticipationRequestDto;
+import com.lionword.privateapi.events.service.PrivateEventsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,25 +17,24 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PrivateEventsController {
 
+    private final PrivateEventsService privateEventsService;
+
     @GetMapping
     public List<EventShortDto> getEvents(@RequestParam(name = "from", required = false) int from,
                                          @RequestParam(name = "size", required = false) int size,
                                          @PathVariable long userId) {
-        //stub
-        return List.of();
+        return privateEventsService.getEvents(from, size, userId);
     }
 
     /*Обратите внимание: дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента*/
     @PostMapping
     public EventFullDto addEvent(@PathVariable long userId, @RequestBody EventFullDto event) {
-        //stub
-        return null;
+        return privateEventsService.addEvent(userId, event);
     }
 
     @GetMapping("/{eventId}")
     public EventFullDto getEventById(@PathVariable long userId, @PathVariable long eventId) {
-        //stub
-        return null;
+        return privateEventsService.getEventById(userId, eventId);
     }
 
     /*Обратите внимание:
@@ -44,14 +44,12 @@ public class PrivateEventsController {
     @PostMapping("/{eventId}")
     public EventFullDto updateEvent(@PathVariable long userId, @PathVariable long eventId,
                                      @RequestBody UpdateEventUserRequest updateEvent) {
-        //stub
-        return null;
+        return privateEventsService.updateEvent(userId, eventId, updateEvent);
     }
 
     @GetMapping("/{eventId}/requests")
     public List<ParticipationRequestDto> getParticipationRequests(@PathVariable long userId, @PathVariable long eventId) {
-        //stub
-        return null;
+        return privateEventsService.getParticipationRequests(userId, eventId);
     }
 
     /*Обратите внимание:
@@ -63,8 +61,7 @@ public class PrivateEventsController {
     @PatchMapping("/{eventId}/requests")
     public EventRequestStatusUpdateResult changeRequestStatus(@PathVariable long userId, @PathVariable long eventId,
                                                               @RequestBody EventRequestStatusUpdateRequest updateRequestStatus) {
-        //stub
-        return null;
+        return privateEventsService.changeRequestStatus(userId, eventId, updateRequestStatus);
     }
 
 }
