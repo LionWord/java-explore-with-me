@@ -72,5 +72,4 @@ public class PrivateParticipationServiceImpl {
         return crudParticipationRepository.save(request);
     }
 
-
 }
