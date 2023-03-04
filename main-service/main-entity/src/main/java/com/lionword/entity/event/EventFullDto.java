@@ -1,6 +1,7 @@
 package com.lionword.entity.event;
 
 import com.lionword.entity.category.CategoryDto;
+import com.lionword.entity.compilation.Compilation;
 import com.lionword.entity.location.Location;
 import com.lionword.entity.user.UserDto;
 import com.lionword.entity.user.UserShortDto;
@@ -9,6 +10,8 @@ import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Set;
+
 @Getter
 @Setter
 @EqualsAndHashCode
@@ -25,7 +28,7 @@ public class EventFullDto {
     @Column(name = "annotation")
     @NonNull
     private String annotation;
-    @Column(name = "category")
+    @JoinColumn(name = "category")
     @NonNull
     @ManyToOne(targetEntity = CategoryDto.class)
     private CategoryDto category;
@@ -42,7 +45,6 @@ public class EventFullDto {
     @NonNull
     @ManyToOne(targetEntity = UserDto.class)
     private UserShortDto initiator;
-    @Column(name = "location")
     @NonNull
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location", referencedColumnName = "event_id" )
@@ -64,5 +66,7 @@ public class EventFullDto {
     private String title;
     @Column(name = "views")
     private long views;
+    @ManyToMany (mappedBy = "events")
+    private Set<Compilation> compilationsIncludingThisEvent;
 
 }
