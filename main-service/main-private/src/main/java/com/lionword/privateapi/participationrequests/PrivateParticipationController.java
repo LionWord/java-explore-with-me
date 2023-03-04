@@ -17,29 +17,19 @@ public class PrivateParticipationController {
 
     @GetMapping
     public List<ParticipationRequestDto> getParticipationRequests(@PathVariable long userId) {
-        //stub
-        return List.of();
+        return privateParticipationService.getParticipationRequests(userId);
     }
-
-    /*Обратите внимание:
-    нельзя добавить повторный запрос (Ожидается код ошибки 409)
-    инициатор события не может добавить запрос на участие в своём событии (Ожидается код ошибки 409)
-    нельзя участвовать в неопубликованном событии (Ожидается код ошибки 409)
-    если у события достигнут лимит запросов на участие - необходимо вернуть ошибку (Ожидается код ошибки 409)
-    если для события отключена пре-модерация запросов на участие, то запрос должен автоматически перейти в состояние подтвержденного*/
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ParticipationRequestDto addParticipationRequest(@PathVariable long userId,
                                                                   @RequestParam(name = "eventId") long eventId) {
-        //stub
-        return null;
+        return privateParticipationService.addParticipationRequest(userId, eventId);
     }
 
     @PatchMapping("/{requestId}/cancel")
     public ParticipationRequestDto cancelParticipationRequest(@PathVariable long userId, @PathVariable long requestId) {
-        //stub
-        return null;
+        return cancelParticipationRequest(userId, requestId);
     }
 
 }
