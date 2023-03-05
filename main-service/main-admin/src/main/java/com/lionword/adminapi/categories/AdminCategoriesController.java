@@ -17,22 +17,18 @@ public class AdminCategoriesController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public CategoryDto addNewCategory(@RequestBody NewCategoryDto newCategory) {
-        //stub
-        //unique category name
-        return new CategoryDto();
+         return adminCategoriesService.addNewCategory(newCategory);
     }
 
     @DeleteMapping("/{catId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteCategory(@PathVariable long catId) {
-        //stub
+        adminCategoriesService.deleteCategory(catId);
     }
 
     @PatchMapping("/{catId}")
     public CategoryDto updateCategory(@RequestBody NewCategoryDto updatedCategory, @PathVariable long catId) {
-        //stub
-        //unique category name
-        return new CategoryDto();
+        return adminCategoriesService.updateCategory(updatedCategory, catId);
     }
 
 }

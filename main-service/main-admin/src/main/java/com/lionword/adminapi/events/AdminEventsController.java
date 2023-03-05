@@ -23,13 +23,11 @@ public class AdminEventsController {
                                         @RequestParam(name = "rangeEnd") String rangeEnd,
                                         @RequestParam(name = "from") int from,
                                         @RequestParam(name = "size") int size) {
-        //stub
         return adminEventsService.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
     @PatchMapping("{eventId}")
     public EventFullDto updateEvent(@PathVariable long eventId, @RequestBody UpdateEventAdminRequest update) {
-        //stub
         return adminEventsService.updateEvent(eventId, update);
     }
 
