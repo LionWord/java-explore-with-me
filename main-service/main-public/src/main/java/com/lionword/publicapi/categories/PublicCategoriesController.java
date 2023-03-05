@@ -17,13 +17,11 @@ public class PublicCategoriesController {
     @GetMapping
     public List<CategoryDto> getCategories(@RequestParam(name = "from") int from,
                                            @RequestParam(name = "size") int size) {
-        //stub
-        return List.of();
+        return publicCategoriesService.getCategories(from, size);
     }
 
     @GetMapping("/{catId}")
     public CategoryDto getCategoryById(@PathVariable long catId) {
-        //stub
-        return new CategoryDto();
+        return publicCategoriesService.getCategoryById(catId);
     }
 }

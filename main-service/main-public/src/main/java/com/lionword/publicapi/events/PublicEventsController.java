@@ -27,15 +27,14 @@ public class PublicEventsController {
     @GetMapping
     public List<EventShortDto> getEvents(@RequestParam(name = "text") String text,
                                          @RequestParam(name = "categories") List<Long> categories,
-                                         @RequestParam(name = "paid") boolean paid,
+                                         @RequestParam(name = "paid") Boolean paid,
                                          @RequestParam(name = "rangeStart") String rangeStart,
                                          @RequestParam(name = "rangeEnd") String rangeEnd,
-                                         @RequestParam(name = "onlyAvailable") boolean onlyAvailable,
+                                         @RequestParam(name = "onlyAvailable") Boolean onlyAvailable,
                                          @RequestParam(name = "sort") EventSort sort,
                                          @RequestParam(name = "from") int from,
                                          @RequestParam(name = "size") int size) {
-        //stub
-        return List.of();
+        return publicEventsService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
     }
 
     /*Обратите внимание:
@@ -47,8 +46,7 @@ public class PublicEventsController {
 
     @GetMapping("/{id}")
     public EventShortDto getEventById(@PathVariable long id) {
-        //stub
-        return null;
+        return publicEventsService.getEventById(id);
     }
 
 }

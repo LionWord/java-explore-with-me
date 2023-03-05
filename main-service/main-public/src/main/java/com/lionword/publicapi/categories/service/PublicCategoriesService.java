@@ -1,4 +1,10 @@
 package com.lionword.publicapi.categories.service;
 
-public class PublicCategoriesService {
+import com.lionword.entity.category.CategoryDto;
+
+import java.util.List;
+
+public interface PublicCategoriesService {
+    List<CategoryDto> getCategories(int from, int size);
+    CategoryDto getCategoryById(long catId);
 }
