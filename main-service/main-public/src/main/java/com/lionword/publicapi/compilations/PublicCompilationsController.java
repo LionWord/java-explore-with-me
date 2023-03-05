@@ -1,6 +1,7 @@
 package com.lionword.publicapi.compilations;
 
 import com.lionword.entity.compilation.Compilation;
+import com.lionword.entity.compilation.CompilationDto;
 import com.lionword.publicapi.compilations.service.PublicCompilationsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -15,17 +16,15 @@ public class PublicCompilationsController {
     private final PublicCompilationsService publicCompilationsService;
 
     @GetMapping
-    public List<Compilation> getCompilations(@RequestParam(name = "pinned") boolean pinned,
+    public List<CompilationDto> getCompilations(@RequestParam(name = "pinned") Boolean pinned,
                                              @RequestParam(name = "from") int from,
                                              @RequestParam(name = "size") int size) {
-        //stub
-        return List.of();
+        return publicCompilationsService.getCompilations(pinned, from, size);
     }
 
 
     @GetMapping("/{compId}")
-    public Compilation getCompilationById(@PathVariable long compId) {
-        //stub
-        return new Compilation();
+    public CompilationDto getCompilationById(@PathVariable long compId) {
+        return publicCompilationsService.getCompilationById(compId);
     }
 }

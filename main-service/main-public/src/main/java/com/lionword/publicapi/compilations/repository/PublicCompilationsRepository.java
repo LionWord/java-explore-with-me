@@ -1,4 +1,7 @@
 package com.lionword.publicapi.compilations.repository;
 
-public interface PublicCompilationsRepository {
+import com.lionword.entity.compilation.Compilation;
+import com.lionword.entity.compilation.CompilationDto;
+
+public interface PublicCompilationsRepository extends LimitedPublicCompilationsRepository<Compilation, Long> {
 }
