@@ -15,7 +15,6 @@ public class AdminEventsController {
 
     private final AdminEventsService adminEventsService;
 
-
     @GetMapping
     public List<EventFullDto> getEvents(@RequestParam(name = "users") List<Long> users,
                                         @RequestParam(name = "states") List<String> states,
@@ -25,13 +24,13 @@ public class AdminEventsController {
                                         @RequestParam(name = "from") int from,
                                         @RequestParam(name = "size") int size) {
         //stub
-        return List.of();
+        return adminEventsService.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
     @PatchMapping("{eventId}")
     public EventFullDto updateEvent(@PathVariable long eventId, @RequestBody UpdateEventAdminRequest update) {
         //stub
-        return new EventFullDto();
+        return adminEventsService.updateEvent(eventId, update);
     }
 
 }
