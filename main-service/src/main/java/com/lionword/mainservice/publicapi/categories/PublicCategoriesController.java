@@ -3,6 +3,7 @@ package com.lionword.mainservice.publicapi.categories;
 import com.lionword.mainservice.entity.category.CategoryDto;
 import com.lionword.mainservice.publicapi.categories.service.PublicCategoriesService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

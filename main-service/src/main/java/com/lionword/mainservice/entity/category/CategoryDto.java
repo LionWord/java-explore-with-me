@@ -1,5 +1,6 @@
 package com.lionword.mainservice.entity.category;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lionword.mainservice.entity.event.EventFullDto;
 import lombok.Getter;
 import lombok.NonNull;
@@ -22,6 +23,7 @@ public class CategoryDto {
     @Column(name = "name")
     @NonNull
     private String name;
+    @JsonIgnore
     @OneToMany(mappedBy = "category")
-    private List<EventFullDto> event;
+    private List<EventFullDto> event = List.of();
 }
