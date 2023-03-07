@@ -24,7 +24,7 @@ public class EventFullDto {
     @ReadOnlyProperty
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
     @Column(name = "annotation")
     @NonNull
     private String annotation;

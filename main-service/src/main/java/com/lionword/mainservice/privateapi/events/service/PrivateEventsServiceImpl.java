@@ -147,9 +147,9 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
         if (newInfo.getAnnotation() != null) {
             event.setAnnotation(newInfo.getAnnotation());
         }
-        if (newInfo.getCategory() != null) {
+        /*if (newInfo.getCategory() != null) {
             event.setCategory(categoryRepo.findById(newInfo.getCategory()));
-        }
+        }*/
         if (newInfo.getDescription() != null) {
             event.setDescription(newInfo.getDescription());
         }

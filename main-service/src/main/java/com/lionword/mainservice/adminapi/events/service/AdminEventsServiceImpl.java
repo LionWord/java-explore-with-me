@@ -33,7 +33,7 @@ public class AdminEventsServiceImpl implements AdminEventsService{
         LocalDateTime start = LocalDateTime.parse(rangeStart);
         LocalDateTime end = LocalDateTime.parse(rangeEnd);
         Pageable pageable = PageRequest.of(from, size);
-        return eventsRepository.searchEventByCriteria(users, states, categories, start, end, pageable);
+        return eventsRepository.searchEventByCriteria(users, states, categories, start, end, pageable).getContent();
     }
 
     @Override
