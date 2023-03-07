@@ -3,12 +3,13 @@ package com.lionword.mainservice.publicapi.events.repository;
 import com.lionword.mainservice.entity.event.EventSort;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-
+@NoRepositoryBean
 public interface LimitedPublicEventsRepository<EventFullDto, Long> extends Repository<EventFullDto, Long> {
 
     @Query("SELECT DISTINCT e " +
