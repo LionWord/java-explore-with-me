@@ -1,10 +1,12 @@
 package com.lionword.mainservice.adminapi.categories.service;
 
 import com.lionword.mainservice.adminapi.categories.repository.AdminCategoriesRepository;
+import com.lionword.mainservice.apierror.exceptions.NotUniqueUsernameException;
 import com.lionword.mainservice.entity.category.CategoryDto;
 import com.lionword.mainservice.entity.category.NewCategoryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -16,7 +18,9 @@ public class AdminCategoriesServiceImpl implements AdminCategoriesService {
     public CategoryDto addNewCategory(NewCategoryDto newCategory) {
         if (categoriesRepository.findByName(newCategory.getName()).isPresent()) {
             //stub (name must be unique)
-            throw new RuntimeException();
+            throw new NotUniqueUsernameException(HttpStatus.CONFLICT,
+                    "Not unique username",
+                    "Username must be unique. Current value: " + newCategory.getName());
         }
         CategoryDto category = new CategoryDto();
         category.setName(newCategory.getName());

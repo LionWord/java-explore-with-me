@@ -18,7 +18,7 @@ public class AdminUserController {
     @GetMapping
     public List<UserDto> getUsers(@RequestParam(name = "ids") List<Long> ids,
                                   @RequestParam(name = "from", defaultValue = "0") int from,
-                                  @RequestParam(name = "from", defaultValue = "10") int size) {
+                                  @RequestParam(name = "size", defaultValue = "10") int size) {
         //stub
         return adminUserService.getUsers(ids, from, size);
     }

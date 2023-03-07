@@ -1,5 +1,7 @@
 package com.lionword.mainservice.entity.user;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.lionword.mainservice.entity.event.EventFullDto;
 import lombok.Getter;
 import lombok.NonNull;
@@ -25,7 +27,8 @@ public class UserDto {
     @Column(name = "name")
     @NonNull
     private String name;
+    @JsonIgnore
     @OneToMany(mappedBy = "initiator")
-    private List<EventFullDto> initiatedEvent;
+    private List<EventFullDto> initiatedEvents = List.of();
 
 }
