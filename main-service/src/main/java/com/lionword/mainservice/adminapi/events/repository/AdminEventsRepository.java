@@ -13,7 +13,7 @@ import java.util.List;
 @Repository
 public interface AdminEventsRepository extends JpaRepository<EventFullDto, Long> {
 
-    @Query("SELECT e FROM EventFullDto e " +
+    /*@Query("SELECT e FROM EventFullDto e " +
             "JOIN FETCH CategoryDto cd " +
             "JOIN FETCH UserDto ud " +
             "JOIN FETCH Location l " +
@@ -25,7 +25,8 @@ public interface AdminEventsRepository extends JpaRepository<EventFullDto, Long>
             "AND (:categories IS EMPTY OR e.category.id IN :categories) " +
             "AND (:rangeStart IS NULL OR e.eventDate >= :rangeStart) " +
             "AND (:rangeEnd IS NULL OR e.eventDate <= :rangeEnd) " +
-            "ORDER BY e.eventDate DESC")
+            "ORDER BY e.eventDate DESC")*/
+    @Query("select e from EventFullDto e ")
     List<EventFullDto> searchEventByCriteria(@Param("users") List<Long> users,
                                              @Param("states") List<String> states,
                                              @Param("categories") List<Long> categories,

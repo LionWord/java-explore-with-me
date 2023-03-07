@@ -15,16 +15,17 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class PrivateParticipationServiceImpl {
+public class PrivateParticipationServiceImpl implements PrivateParticipationService{
     private final ParticipationRepository participationRepository;
 
     private final CrudParticipationRepository crudParticipationRepository;
     private final PrivateEventsRepository eventsRepository;
 
+    @Override
     public List<ParticipationRequestDto> getParticipationRequests(long userId) {
         return participationRepository.findAllByRequester(userId);
     }
-
+    @Override
     public ParticipationRequestDto addParticipationRequest(long userId, long eventId) {
         EventFullDto event = eventsRepository.findById(eventId).orElseThrow();
         if (!participationRepository.findAllByEventAndRequester(eventId, userId).isEmpty()) {
@@ -57,7 +58,7 @@ public class PrivateParticipationServiceImpl {
         }
         return crudParticipationRepository.save(newRequest);
     }
-
+    @Override
     public ParticipationRequestDto cancelParticipationRequest(long userId, long requestId) {
         ParticipationRequestDto request = participationRepository.findByIdAndRequester(requestId, userId)
                 .orElseThrow();
