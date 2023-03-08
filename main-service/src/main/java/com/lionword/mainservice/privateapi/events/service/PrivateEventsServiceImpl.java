@@ -42,14 +42,14 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
 
     @Override
     public EventFullDto addEvent(long userId, EventFullDto event) {
-        LocalDateTime createdOn = LocalDateTime.from(Instant.now());
+        LocalDateTime createdOn = LocalDateTime.now();
         if (event.getEventDate().minusHours(2).isBefore(createdOn)) {
             //stub
             throw new RuntimeException();
         }
-        event.setInitiator(userRepo.findById(userId));
-        event.setCreatedOn(LocalDateTime.from(Instant.now()));
+        event.setInitiator(userRepo.findById(userId).orElseThrow());
         event.setState(EventState.PENDING);
+        event.setCategory(categoryRepo.findById(event.getCategory().getId()).orElseThrow());
         return eventRepo.save(event);
     }
 

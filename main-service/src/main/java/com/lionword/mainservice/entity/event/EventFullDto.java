@@ -1,20 +1,22 @@
 package com.lionword.mainservice.entity.event;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lionword.mainservice.entity.category.CategoryDto;
 import com.lionword.mainservice.entity.compilation.Compilation;
 import com.lionword.mainservice.entity.location.Location;
 import com.lionword.mainservice.entity.user.UserDto;
-import com.lionword.mainservice.entity.user.UserShortDto;
 import lombok.*;
+import org.hibernate.Hibernate;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Set;
 
 @Getter
 @Setter
-@EqualsAndHashCode
 @RequiredArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -35,11 +37,12 @@ public class EventFullDto {
     @Column(name = "confirmed_requests")
     private int confirmedRequests;
     @Column(name = "created_on")
-    private LocalDateTime createdOn;
+    private LocalDateTime createdOn = LocalDateTime.now();
     @Column(name = "description")
     private String description;
     @Column(name = "event_date")
     @NonNull
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
     @NonNull
     @ManyToOne
@@ -67,6 +70,19 @@ public class EventFullDto {
     @Column(name = "views")
     private long views;
     @ManyToMany(mappedBy = "events")
+    @JsonIgnore
     private Set<Compilation> compilationsIncludingThisEvent;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        EventFullDto that = (EventFullDto) o;
+        return id != null && Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
+    }
 }
