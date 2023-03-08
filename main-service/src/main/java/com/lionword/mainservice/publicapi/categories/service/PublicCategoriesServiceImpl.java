@@ -1,10 +1,12 @@
 package com.lionword.mainservice.publicapi.categories.service;
 
+import com.lionword.mainservice.apierror.exceptions.NoSuchEntryException;
 import com.lionword.mainservice.entity.category.CategoryDto;
 import com.lionword.mainservice.publicapi.categories.repository.PublicCategoriesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,6 +22,10 @@ public class PublicCategoriesServiceImpl implements PublicCategoriesService {
     }
 
     public CategoryDto getCategoryById(long catId) {
-        return categoriesRepository.findById(catId).orElseThrow();
+        return categoriesRepository.findById(catId).orElseThrow(
+                () -> new NoSuchEntryException(
+                        HttpStatus.NOT_FOUND,
+                        "Category entry not found",
+                        "Category with id " + catId + " was not found"));
     }
 }
