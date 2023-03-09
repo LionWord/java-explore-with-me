@@ -1,5 +1,6 @@
 package com.lionword.mainservice.publicapi.events;
 
+import com.lionword.mainservice.entity.event.EventFullDto;
 import com.lionword.mainservice.entity.event.EventShortDto;
 import com.lionword.mainservice.entity.event.EventSort;
 import com.lionword.mainservice.publicapi.events.service.PublicEventsService;
@@ -45,7 +46,7 @@ public class PublicEventsController {
     -в случае, если события с заданным id не найдено, возвращает статус код 404*/
 
     @GetMapping("/{id}")
-    public EventShortDto getEventById(@PathVariable long id) {
+    public EventFullDto getEventById(@PathVariable long id) {
         return publicEventsService.getEventById(id);
     }
 
