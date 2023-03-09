@@ -9,13 +9,13 @@ import com.lionword.mainservice.entity.event.EventState;
 import com.lionword.mainservice.entity.event.StateActionAdmin;
 import com.lionword.mainservice.entity.event.UpdateEventAdminRequest;
 import com.lionword.mainservice.entity.location.Location;
+import com.lionword.mainservice.entity.util.TimeFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -25,7 +25,6 @@ public class AdminEventsServiceImpl implements AdminEventsService{
     private final AdminEventsRepository eventsRepository;
     private final AdminCategoriesRepository categoriesRepository;
     private final AdminLocationRepository locationRepository;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     @Override
     public List<EventFullDto> getEvents(List<Long> users,
@@ -35,8 +34,8 @@ public class AdminEventsServiceImpl implements AdminEventsService{
                                         String rangeEnd,
                                         int from,
                                         int size) {
-        LocalDateTime start = LocalDateTime.parse(rangeStart, formatter);
-        LocalDateTime end = LocalDateTime.parse(rangeEnd, formatter);
+        LocalDateTime start = LocalDateTime.parse(rangeStart, TimeFormatter.DEFAULT);
+        LocalDateTime end = LocalDateTime.parse(rangeEnd, TimeFormatter.DEFAULT);
         Pageable pageable = PageRequest.of(from, size);
         return eventsRepository.searchEventByCriteria(users, states, categories, start, end, pageable).getContent();
     }
