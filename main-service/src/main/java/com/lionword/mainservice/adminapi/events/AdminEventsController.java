@@ -1,5 +1,6 @@
 package com.lionword.mainservice.adminapi.events;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lionword.mainservice.adminapi.events.service.AdminEventsService;
 import com.lionword.mainservice.entity.event.EventFullDto;
 import com.lionword.mainservice.entity.event.EventState;
@@ -18,7 +19,7 @@ public class AdminEventsController {
 
     @GetMapping
     public List<EventFullDto> getEvents(@RequestParam(name = "users") List<Long> users,
-                                        @RequestParam(name = "states") List<String> states,
+                                        @RequestParam(name = "states") List<EventState> states,
                                         @RequestParam(name = "categories") List<Long> categories,
                                         @RequestParam(name = "rangeStart") String rangeStart,
                                         @RequestParam(name = "rangeEnd") String rangeEnd,
