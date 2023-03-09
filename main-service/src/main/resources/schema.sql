@@ -42,8 +42,7 @@ create table if not exists public.events
     event_date         timestamp             not null,
     initiator          bigint                not null
         references public.users,
-    location           bigint                not null
-        references public.locations,
+    location           bigint                not null,
     paid               boolean default false not null,
     participant_limit  integer default 0,
     published_on       timestamp,

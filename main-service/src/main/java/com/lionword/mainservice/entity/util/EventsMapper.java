@@ -3,6 +3,8 @@ package com.lionword.mainservice.entity.util;
 import com.lionword.mainservice.entity.event.EventFullDto;
 import com.lionword.mainservice.entity.event.EventShortDto;
 
+import java.time.LocalDateTime;
+
 public class EventsMapper {
 
     public static EventShortDto mapToShort(EventFullDto fullDto) {
