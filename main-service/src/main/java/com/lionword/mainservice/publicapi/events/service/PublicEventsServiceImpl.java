@@ -5,6 +5,7 @@ import com.lionword.mainservice.entity.event.EventShortDto;
 import com.lionword.mainservice.entity.event.EventSort;
 import com.lionword.mainservice.entity.event.EventState;
 import com.lionword.mainservice.entity.util.EventsMapper;
+import com.lionword.mainservice.entity.util.TimeFormatter;
 import com.lionword.mainservice.publicapi.events.repository.PublicEventsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
@@ -31,11 +32,11 @@ public class PublicEventsServiceImpl implements PublicEventsService {
                                          int from,
                                          int size) {
 
-        LocalDateTime start = LocalDateTime.parse(rangeStart);
-        LocalDateTime end = LocalDateTime.parse(rangeEnd);
+        LocalDateTime start = LocalDateTime.parse(rangeStart, TimeFormatter.DEFAULT);
+        LocalDateTime end = LocalDateTime.parse(rangeEnd, TimeFormatter.DEFAULT);
         Pageable pageable = PageRequest.of(from, size);
-
-        return eventsRepository.searchEventByCriteria(text, categories, paid, start, end, onlyAvailable, sort, pageable)
+        String sortValue = sort.name();
+        return eventsRepository.searchEventByCriteria(text, categories, paid, start, end, onlyAvailable, sortValue, pageable)
                 .stream()
                 .map(EventsMapper::mapToShort)
                 .collect(Collectors.toList());
