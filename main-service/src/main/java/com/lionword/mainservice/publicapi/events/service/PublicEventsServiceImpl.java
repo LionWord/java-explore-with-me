@@ -35,11 +35,19 @@ public class PublicEventsServiceImpl implements PublicEventsService {
         LocalDateTime start = LocalDateTime.parse(rangeStart, TimeFormatter.DEFAULT);
         LocalDateTime end = LocalDateTime.parse(rangeEnd, TimeFormatter.DEFAULT);
         Pageable pageable = PageRequest.of(from, size);
-        String sortValue = sort.name();
-        return eventsRepository.searchEventByCriteria(text, categories, paid, start, end, onlyAvailable, sortValue, pageable)
-                .stream()
-                .map(EventsMapper::mapToShort)
-                .collect(Collectors.toList());
+        if (sort.equals(EventSort.EVENT_DATE)) {
+            return eventsRepository.searchEventByCriteriaSortByDate(text, categories, paid, start, end, onlyAvailable, pageable)
+                    .stream()
+                    .map(EventsMapper::mapToShort)
+                    .collect(Collectors.toList());
+        } else if (sort.equals(EventSort.VIEWS)) {
+            return eventsRepository.searchEventByCriteriaSortByViews(text, categories, paid, start, end, onlyAvailable, pageable)
+                    .stream()
+                    .map(EventsMapper::mapToShort)
+                    .collect(Collectors.toList());
+        }
+        return List.of();
+
     }
 
     public EventShortDto getEventById(long id) {
