@@ -8,6 +8,7 @@ import com.lionword.mainservice.entity.participation.EventRequestStatusUpdateRes
 import com.lionword.mainservice.entity.participation.ParticipationRequestDto;
 import com.lionword.mainservice.privateapi.events.service.PrivateEventsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,6 +29,7 @@ public class PrivateEventsController {
 
     /*Обратите внимание: дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента*/
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto addEvent(@PathVariable long userId, @RequestBody EventFullDto event) {
         return privateEventsService.addEvent(userId, event);
     }
