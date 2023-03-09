@@ -50,7 +50,7 @@ public class EventFullDto {
     private UserDto initiator;
     @NonNull
     @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "location", referencedColumnName = "event_id")
+    @JoinColumn(name = "location", referencedColumnName = "id")
     private Location location;
     @Column(name = "paid")
     @NonNull
