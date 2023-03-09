@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -49,14 +50,16 @@ public class PublicEventsServiceImpl implements PublicEventsService {
         return List.of();
 
     }
-
-    public EventShortDto getEventById(long id) {
+    @Transactional
+    public EventFullDto getEventById(long id) {
         EventFullDto event = eventsRepository.findById(id).orElseThrow();
         if (!event.getState().equals(EventState.PUBLISHED)) {
             //stub
             throw new RuntimeException();
         }
-        return EventsMapper.mapToShort(event);
+        eventsRepository.addView(id);
+        event.setViews(event.getViews() + 1);
+        return event;
     }
 
 }

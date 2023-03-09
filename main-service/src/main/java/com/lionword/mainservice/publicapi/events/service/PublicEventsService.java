@@ -1,5 +1,6 @@
 package com.lionword.mainservice.publicapi.events.service;
 
+import com.lionword.mainservice.entity.event.EventFullDto;
 import com.lionword.mainservice.entity.event.EventShortDto;
 import com.lionword.mainservice.entity.event.EventSort;
 
@@ -16,5 +17,5 @@ public interface PublicEventsService {
                                   int from,
                                   int size);
 
-    EventShortDto getEventById(long id);
+    EventFullDto getEventById(long id);
 }
