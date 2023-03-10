@@ -39,11 +39,12 @@ public class PrivateEventsController {
         return privateEventsService.getEventByInitiatorAndId(userId, eventId);
     }
 
+
     /*Обратите внимание:
 
     изменить можно только отмененные события или события в состоянии ожидания модерации (Ожидается код ошибки 409)
     дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента (Ожидается код ошибки 409)*/
-    @PostMapping("/{eventId}")
+    @PatchMapping("/{eventId}")
     public EventFullDto updateEvent(@PathVariable long userId, @PathVariable long eventId,
                                     @RequestBody UpdateEventUserRequest updateEvent) {
         return privateEventsService.updateEvent(userId, eventId, updateEvent);

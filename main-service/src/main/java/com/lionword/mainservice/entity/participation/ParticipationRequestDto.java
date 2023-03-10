@@ -1,5 +1,6 @@
 package com.lionword.mainservice.entity.participation;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -18,6 +19,7 @@ public class ParticipationRequestDto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @Column(name = "created")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime created;
     @Column(name = "event")
     private long event;

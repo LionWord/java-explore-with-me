@@ -29,7 +29,7 @@ public class PrivateParticipationController {
 
     @PatchMapping("/{requestId}/cancel")
     public ParticipationRequestDto cancelParticipationRequest(@PathVariable long userId, @PathVariable long requestId) {
-        return cancelParticipationRequest(userId, requestId);
+        return privateParticipationService.cancelParticipationRequest(userId, requestId);
     }
 
 }
