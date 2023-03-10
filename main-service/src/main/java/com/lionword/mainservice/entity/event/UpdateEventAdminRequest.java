@@ -1,13 +1,15 @@
 package com.lionword.mainservice.entity.event;
 
 import com.lionword.mainservice.entity.location.Location;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
+@ToString
+@EqualsAndHashCode
+@RequiredArgsConstructor
 public class UpdateEventAdminRequest {
     //minmax
     private String annotation;
