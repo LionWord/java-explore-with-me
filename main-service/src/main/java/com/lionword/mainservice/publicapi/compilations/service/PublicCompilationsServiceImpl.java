@@ -19,11 +19,11 @@ public class PublicCompilationsServiceImpl implements PublicCompilationsService 
     public List<CompilationDto> getCompilations(Boolean pinned, int from, int size) {
         List<CompilationDto> compilations;
         if (pinned != null) {
-            compilations = compilationsRepository.findAllByPinned(pinned, PageRequest.of(from, size)).stream()
+            compilations = compilationsRepository.findAllByPinned(pinned, PageRequest.of(from, size)).getContent().stream()
                     .map(CompilationsMapper::mapToDto)
                     .collect(Collectors.toList());
         } else {
-            compilations = compilationsRepository.findAll(PageRequest.of(from, size)).stream()
+            compilations = compilationsRepository.findAll(PageRequest.of(from, size)).getContent().stream()
                     .map(CompilationsMapper::mapToDto)
                     .collect(Collectors.toList());
         }

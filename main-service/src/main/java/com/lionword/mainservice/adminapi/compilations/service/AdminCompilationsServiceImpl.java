@@ -9,6 +9,7 @@ import com.lionword.mainservice.entity.compilation.UpdateCompilationRequest;
 import com.lionword.mainservice.entity.event.EventFullDto;
 import com.lionword.mainservice.entity.util.CompilationsMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,8 +18,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminCompilationsServiceImpl implements AdminCompilationsService {
 
-    AdminCompilationsRepository compilationsRepository;
-    AdminEventsRepository eventsRepository;
+    private final AdminCompilationsRepository compilationsRepository;
+    private final AdminEventsRepository eventsRepository;
 
     public CompilationDto addCompilation(NewCompilationDto compilation) {
         Compilation newCompilation = new Compilation();
