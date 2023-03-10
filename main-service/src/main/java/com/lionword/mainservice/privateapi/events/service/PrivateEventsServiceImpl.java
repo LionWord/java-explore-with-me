@@ -16,6 +16,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,9 +27,9 @@ import java.util.stream.Collectors;
 public class PrivateEventsServiceImpl implements PrivateEventsService {
 
     private final PrivateEventsRepository eventRepo;
-    private final UserRepository userRepo;
-    private final CategoryRepository categoryRepo;
-    private final ParticipationRepository participationRepo;
+    private final PrivateUserRepository userRepo;
+    private final PrivateCategoryRepository categoryRepo;
+    private final PrivateParticipationRepository participationRepo;
     private final LocationRepository locationRepo;
 
     @Override
@@ -49,21 +50,29 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
         event.setInitiator(userRepo.findById(userId).orElseThrow());
         event.setState(EventState.PENDING);
         event.setCategory(categoryRepo.findById(event.getCategory().getId()).orElseThrow());
-        Location location =  locationRepo.save(event.getLocation());
         event = eventRepo.save(event);
+        Location location = event.getLocation();
+        locationRepo.save(event.getLocation());
         location.setEventId(event.getId());
-        event.setLocation(location);
-        return eventRepo.save(event);
+        locationRepo.save(location);
+        event.setLocation(locationRepo.findByEventId(event.getId()));
+
+        event = eventRepo.save(event);
+        return event;
     }
 
     @Override
-    public EventFullDto getEventById(long userId, long eventId) {
-        return eventRepo.findByIdAndInitiatorId(eventId, userId);
+    @Transactional
+    public EventFullDto getEventByInitiatorAndId(long userId, long eventId) {
+        EventFullDto event = eventRepo.findAllByIdAndInitiatorId(eventId, userId).orElseThrow();
+        eventRepo.addView(eventId);
+        event.setViews(event.getViews() + 1);
+        return event;
     }
 
     @Override
     public EventFullDto updateEvent(long userId, long eventId, UpdateEventUserRequest updateEvent) {
-        EventFullDto event = eventRepo.findByIdAndInitiatorId(eventId, userId);
+        EventFullDto event = eventRepo.findAllByIdAndInitiatorId(eventId, userId).orElseThrow();
         if (event.getState().equals(EventState.PUBLISHED)) {
             //stub
             throw new RuntimeException();
@@ -132,9 +141,9 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
         if (newInfo.getAnnotation() != null) {
             event.setAnnotation(newInfo.getAnnotation());
         }
-        /*if (newInfo.getCategory() != null) {
-            event.setCategory(categoryRepo.findById(newInfo.getCategory()));
-        }*/
+        if (newInfo.getCategory() != null) {
+            event.setCategory(categoryRepo.findById(newInfo.getCategory()).orElseThrow());
+        }
         if (newInfo.getDescription() != null) {
             event.setDescription(newInfo.getDescription());
         }
@@ -142,10 +151,11 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
             event.setEventDate(newInfo.getEventDate());
         }
         if (newInfo.getLocation() != null) {
-            event.setLocation(newInfo.getLocation());
-        }
-        if (newInfo.getPaid() != null) {
-            event.setPaid(newInfo.getPaid());
+            Location location = newInfo.getLocation();
+            locationRepo.updateEventLocation(location.getLat(), location.getLon(), event.getId());
+            event.setLocation(locationRepo.findByEventId(event.getId()));
+        } else {
+            event.setLocation(locationRepo.findByEventId(event.getId()));
         }
         if (newInfo.getParticipantLimit() != null) {
             event.setParticipantLimit(newInfo.getParticipantLimit());

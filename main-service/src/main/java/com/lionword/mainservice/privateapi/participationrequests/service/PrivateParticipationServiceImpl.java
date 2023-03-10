@@ -5,7 +5,7 @@ import com.lionword.mainservice.entity.event.EventState;
 import com.lionword.mainservice.entity.participation.ParticipationRequestDto;
 import com.lionword.mainservice.entity.participation.RequestState;
 import com.lionword.mainservice.privateapi.repository.CrudParticipationRepository;
-import com.lionword.mainservice.privateapi.repository.ParticipationRepository;
+import com.lionword.mainservice.privateapi.repository.PrivateParticipationRepository;
 import com.lionword.mainservice.privateapi.repository.PrivateEventsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +16,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class PrivateParticipationServiceImpl implements PrivateParticipationService{
-    private final ParticipationRepository participationRepository;
+    private final PrivateParticipationRepository participationRepository;
 
     private final CrudParticipationRepository crudParticipationRepository;
     private final PrivateEventsRepository eventsRepository;

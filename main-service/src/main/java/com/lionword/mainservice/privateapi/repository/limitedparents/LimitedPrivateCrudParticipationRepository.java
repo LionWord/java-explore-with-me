@@ -5,6 +5,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.NoRepositoryBean;
 
 @NoRepositoryBean
-public interface LimitedCrudParticipationRepository extends CrudRepository<ParticipationRequestDto, Long> {
+public interface LimitedPrivateCrudParticipationRepository extends CrudRepository<ParticipationRequestDto, Long> {
     ParticipationRequestDto save(ParticipationRequestDto request);
 }
