@@ -22,9 +22,9 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminEventsServiceImpl implements AdminEventsService{
 
-    private final AdminEventsRepository eventsRepository;
-    private final AdminCategoriesRepository categoriesRepository;
-    private final AdminLocationRepository locationRepository;
+    private final AdminEventsRepository eventsRepo;
+    private final AdminCategoriesRepository categoriesRepo;
+    private final AdminLocationRepository locationRepo;
 
     @Override
     public List<EventFullDto> getEvents(List<Long> users,
@@ -37,17 +37,17 @@ public class AdminEventsServiceImpl implements AdminEventsService{
         LocalDateTime start = LocalDateTime.parse(rangeStart, TimeFormatter.DEFAULT);
         LocalDateTime end = LocalDateTime.parse(rangeEnd, TimeFormatter.DEFAULT);
         Pageable pageable = PageRequest.of(from, size);
-        return eventsRepository.searchEventByCriteria(users, states, categories, start, end, pageable).getContent();
+        return eventsRepo.searchEventByCriteria(users, states, categories, start, end, pageable).getContent();
     }
 
     @Override
     public EventFullDto updateEvent(long eventId, UpdateEventAdminRequest update) {
-        EventFullDto event = eventsRepository.findById(eventId).orElseThrow();
+        EventFullDto event = eventsRepo.findById(eventId).orElseThrow();
         if (update.getAnnotation() != null && !update.getAnnotation().isBlank()) {
             event.setAnnotation(update.getAnnotation());
         }
         if (update.getCategory() != null) {
-            CategoryDto newCategory = categoriesRepository.findById(update.getCategory()).orElseThrow();
+            CategoryDto newCategory = categoriesRepo.findById(update.getCategory()).orElseThrow();
             event.setCategory(newCategory);
         }
         if (update.getDescription() != null && !update.getDescription().isBlank()) {
@@ -58,10 +58,10 @@ public class AdminEventsServiceImpl implements AdminEventsService{
         }
         if (update.getLocation() != null) {
             Location location = update.getLocation();
-            locationRepository.updateEventLocation(location.getLat(), location.getLon(), eventId);
-            event.setLocation(locationRepository.findByEventId(eventId));
+            locationRepo.updateEventLocation(location.getLat(), location.getLon(), eventId);
+            event.setLocation(locationRepo.findByEventId(eventId));
         } else {
-            event.setLocation(locationRepository.findByEventId(eventId));
+            event.setLocation(locationRepo.findByEventId(eventId));
         }
 
         if (update.getPaid() != null) {
@@ -83,7 +83,7 @@ public class AdminEventsServiceImpl implements AdminEventsService{
         if (update.getTitle() != null && !update.getTitle().isBlank()) {
             event.setTitle(update.getTitle());
         }
-        return eventsRepository.save(event);
+        return eventsRepo.save(event);
     }
 
 

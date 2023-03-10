@@ -20,6 +20,11 @@ public interface LimitedPublicEventsRepository<EventFullDto, Long> extends Repos
             "WHERE e.id = :eventId")
     void addView(long eventId);
 
+    @Modifying
+    @Query ("UPDATE EventFullDto e SET e.views = e.views + 1" +
+            "WHERE e.id IN :eventIds")
+    void addViewToMultipleEvents(List<Long> eventIds);
+
     @Query("SELECT e FROM EventFullDto e " +
             "JOIN FETCH CategoryDto cd ON e.category=cd " +
             "JOIN FETCH Location l ON e.location=l " +
@@ -59,5 +64,6 @@ public interface LimitedPublicEventsRepository<EventFullDto, Long> extends Repos
                                                        LocalDateTime rangeEnd,
                                                        Boolean onlyAvailable,
                                                        Pageable pageable);
+
 }
 

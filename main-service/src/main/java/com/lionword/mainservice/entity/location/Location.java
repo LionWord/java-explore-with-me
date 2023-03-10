@@ -15,13 +15,11 @@ import java.io.Serializable;
 @Setter
 @RequiredArgsConstructor
 public class Location implements Serializable {
+
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @JsonIgnore
-    private long id;
     @Column(name = "event_id")
- //   @JsonIgnore
+    @GeneratedValue(strategy = GenerationType.TABLE)
+    @JsonIgnore
     private long eventId;
     @Column(name = "latitude")
     private float lat;

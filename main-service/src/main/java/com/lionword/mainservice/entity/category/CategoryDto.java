@@ -1,11 +1,8 @@
 package com.lionword.mainservice.entity.category;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.lionword.mainservice.entity.event.EventFullDto;
-import com.lionword.mainservice.privateapi.repository.CategoryRepository;
 import lombok.*;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.*;
