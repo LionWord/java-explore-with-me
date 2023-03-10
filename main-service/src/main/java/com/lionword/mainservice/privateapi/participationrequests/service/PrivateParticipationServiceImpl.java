@@ -17,7 +17,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PrivateParticipationServiceImpl implements PrivateParticipationService{
     private final PrivateParticipationRepository participationRepository;
-
     private final CrudParticipationRepository crudParticipationRepository;
     private final PrivateEventsRepository eventsRepository;
 
