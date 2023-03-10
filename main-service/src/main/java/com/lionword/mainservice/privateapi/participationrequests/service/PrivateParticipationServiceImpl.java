@@ -66,7 +66,7 @@ public class PrivateParticipationServiceImpl implements PrivateParticipationServ
             event.setConfirmedRequests(event.getConfirmedRequests() - 1);
             eventsRepository.save(event);
         }
-        request.setStatus(RequestState.CANCELLED);
+        request.setStatus(RequestState.CANCELED);
         return crudParticipationRepository.save(request);
     }
 

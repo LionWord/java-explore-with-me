@@ -37,6 +37,7 @@ public class EventFullDto {
     @Column(name = "confirmed_requests")
     private int confirmedRequests;
     @Column(name = "created_on")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdOn = LocalDateTime.now();
     @Column(name = "description")
     private String description;
@@ -58,6 +59,7 @@ public class EventFullDto {
     @Column(name = "participant_limit")
     private int participantLimit;
     @Column(name = "published_on")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishedOn;
     @Column(name = "request_moderation")
     private boolean requestModeration;

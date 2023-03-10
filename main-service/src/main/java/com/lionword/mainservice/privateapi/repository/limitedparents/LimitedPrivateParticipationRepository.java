@@ -9,7 +9,7 @@ import java.util.Optional;
 public interface LimitedPrivateParticipationRepository<ParticipationRequestDto, Long> extends Repository<ParticipationRequestDto, Long> {
     List<ParticipationRequestDto> findAllByEventAndRequester(long eventId, long userId);
 
-    ParticipationRequestDto findById(long requestId);
+    Optional<ParticipationRequestDto> findById(long requestId);
 
     List<ParticipationRequestDto> findAllByRequester(long userId);
 

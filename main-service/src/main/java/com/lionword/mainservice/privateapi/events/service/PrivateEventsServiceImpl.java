@@ -19,7 +19,9 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,10 +66,7 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
     @Override
     @Transactional
     public EventFullDto getEventByInitiatorAndId(long userId, long eventId) {
-        EventFullDto event = eventRepo.findAllByIdAndInitiatorId(eventId, userId).orElseThrow();
-        eventRepo.addView(eventId);
-        event.setViews(event.getViews() + 1);
-        return event;
+        return eventRepo.findAllByIdAndInitiatorId(eventId, userId).orElseThrow();
     }
 
     @Override
@@ -95,9 +94,11 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
     public EventRequestStatusUpdateResult changeRequestStatus(long userId, long eventId, EventRequestStatusUpdateRequest updateRequestStatus) {
         EventRequestStatusUpdateResult result = new EventRequestStatusUpdateResult();
         EventFullDto event = eventRepo.findById(eventId).orElseThrow();
-        List<ParticipationRequestDto> requests = updateRequestStatus.getRequestIds().stream()
+        ArrayList<ParticipationRequestDto> requests = updateRequestStatus.getRequestIds().stream()
                 .map(participationRepo::findById)
-                .collect(Collectors.toList());
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toCollection(ArrayList::new));
 
         if (event.getParticipantLimit() == 0 || !event.isRequestModeration()) {
             result.setConfirmedRequests(requests);
@@ -121,12 +122,15 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
         int availableSlots = event.getParticipantLimit() - event.getConfirmedRequests();
         //my code
         for (int i = 0; i <= availableSlots; i++) {
-            if (requests.size() > 0 & i == availableSlots) {
-                requests = requests.subList(i, requests.size());
+            if (i == availableSlots & i < requests.size()) {
+                requests = new ArrayList<>(requests.subList(i, requests.size()));
                 for (ParticipationRequestDto prd : requests) {
                     prd.setStatus(RequestState.REJECTED);
                     result.getRejectedRequests().add(prd);
                 }
+            }
+            if (i == requests.size()) {
+                break;
             }
             requests.get(i).setStatus(RequestState.CONFIRMED);
             result.getConfirmedRequests().add(requests.get(i));
