@@ -28,7 +28,6 @@ public class AdminCompilationsController {
     }
 
     @PatchMapping("/{compId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     public CompilationDto updateCompilation(@PathVariable long compId, @RequestBody UpdateCompilationRequest updatedCompilation) {
         return adminCompilationsService.updateCompilation(compId, updatedCompilation);
     }

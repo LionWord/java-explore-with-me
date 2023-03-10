@@ -41,8 +41,15 @@ public class AdminCompilationsServiceImpl implements AdminCompilationsService {
 
     public CompilationDto updateCompilation(long compId, UpdateCompilationRequest updatedCompilation) {
         Compilation compilation = compilationsRepository.findById(compId).orElseThrow();
-        compilation.setPinned(updatedCompilation.isPinned());
-        compilation.setTitle(updatedCompilation.getTitle());
+        if (updatedCompilation.getPinned() != null) {
+            compilation.setPinned(updatedCompilation.getPinned());
+        }
+        if (updatedCompilation.getTitle() != null) {
+            if (!updatedCompilation.getTitle().isBlank()) {
+                compilation.setTitle(updatedCompilation.getTitle());
+            }
+        }
+
         if (updatedCompilation.getEvents().isEmpty()) {
             compilationsRepository.save(compilation);
             return CompilationsMapper.mapToDto(compilation);
