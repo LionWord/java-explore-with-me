@@ -3,6 +3,7 @@ package com.lionword.mainservice.adminapi.events.service;
 import com.lionword.mainservice.adminapi.categories.repository.AdminCategoriesRepository;
 import com.lionword.mainservice.adminapi.events.repository.AdminEventsRepository;
 import com.lionword.mainservice.adminapi.events.repository.AdminLocationRepository;
+import com.lionword.mainservice.apierror.exceptions.TimeConstraintViolationException;
 import com.lionword.mainservice.entity.category.CategoryDto;
 import com.lionword.mainservice.entity.event.EventFullDto;
 import com.lionword.mainservice.entity.event.EventState;
@@ -13,6 +14,7 @@ import com.lionword.mainservice.entity.util.TimeFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -54,6 +56,18 @@ public class AdminEventsServiceImpl implements AdminEventsService{
             event.setDescription(update.getDescription());
         }
         if (update.getEventDate() != null) {
+            if (event.getState().equals(EventState.PUBLISHED)) {
+                if (update.getEventDate().minusHours(1).isBefore(event.getPublishedOn())) {
+                    throw new TimeConstraintViolationException(HttpStatus.CONFLICT,
+                            "Invalid event date",
+                            "Event date can't be later than one hour before publication date");
+                }
+            }
+            if (update.getEventDate().isBefore(event.getCreatedOn())) {
+                throw new TimeConstraintViolationException(HttpStatus.CONFLICT,
+                        "Invalid event date",
+                        "Event date can't be earlier than creation date");
+            }
             event.setEventDate(update.getEventDate());
         }
         if (update.getLocation() != null) {
@@ -73,12 +87,14 @@ public class AdminEventsServiceImpl implements AdminEventsService{
         if (update.getRequestModeration() != null) {
             event.setRequestModeration(update.getRequestModeration());
         }
-        if (update.getStateAction().equals(StateActionAdmin.PUBLISH_EVENT)) {
-            event.setPublishedOn(LocalDateTime.now());
-            event.setState(EventState.PUBLISHED);
-        }
-        if (update.getStateAction().equals(StateActionAdmin.REJECT_EVENT)) {
-            event.setState(EventState.CANCELED);
+        if (update.getStateAction() != null) {
+            if (update.getStateAction().equals(StateActionAdmin.PUBLISH_EVENT)) {
+                event.setPublishedOn(LocalDateTime.now());
+                event.setState(EventState.PUBLISHED);
+            }
+            if (update.getStateAction().equals(StateActionAdmin.REJECT_EVENT)) {
+                event.setState(EventState.CANCELED);
+            }
         }
         if (update.getTitle() != null && !update.getTitle().isBlank()) {
             event.setTitle(update.getTitle());

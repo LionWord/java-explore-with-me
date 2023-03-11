@@ -5,17 +5,14 @@ import com.lionword.mainservice.adminapi.events.repository.AdminEventsRepository
 import com.lionword.mainservice.apierror.exceptions.HaveLinkedEventsException;
 import com.lionword.mainservice.apierror.exceptions.NoSuchEntryException;
 import com.lionword.mainservice.apierror.exceptions.NotUniqueCategoryNameException;
-import com.lionword.mainservice.apierror.exceptions.NotUniqueUsernameException;
 import com.lionword.mainservice.entity.category.CategoryDto;
 import com.lionword.mainservice.entity.category.NewCategoryDto;
 import com.lionword.mainservice.entity.event.EventFullDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -26,7 +23,7 @@ public class AdminCategoriesServiceImpl implements AdminCategoriesService {
     private final AdminEventsRepository eventsRepository;
 
     public CategoryDto addNewCategory(NewCategoryDto newCategory) {
-        checkIfNameIsUnique(newCategory.getName());
+        checkIfCategoryNameIsUnique(newCategory.getName());
         CategoryDto category = new CategoryDto();
         category.setName(newCategory.getName());
         return categoriesRepository.save(category);
@@ -38,7 +35,7 @@ public class AdminCategoriesServiceImpl implements AdminCategoriesService {
     }
 
     public CategoryDto updateCategory(NewCategoryDto updatedCategory, long catId) {
-        checkIfNameIsUnique(updatedCategory.getName());
+        checkIfCategoryNameIsUnique(updatedCategory.getName());
         CategoryDto category = categoriesRepository.findById(catId).orElseThrow();
         category.setName(updatedCategory.getName());
         return categoriesRepository.save(category);
@@ -46,7 +43,7 @@ public class AdminCategoriesServiceImpl implements AdminCategoriesService {
 
     //-----Service methods------
 
-    private void checkIfNameIsUnique(String name) {
+    private void checkIfCategoryNameIsUnique(String name) {
         if (categoriesRepository.findByName(name).isPresent()) {
             throw new NotUniqueCategoryNameException(HttpStatus.CONFLICT,
                     "Not unique category name",
