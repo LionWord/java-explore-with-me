@@ -13,7 +13,8 @@ public class ErrorHandler {
 
     @ExceptionHandler({NotUniqueUsernameException.class,
             NotUniqueCategoryNameException.class,
-            HaveLinkedEventsException.class})
+            HaveLinkedEventsException.class,
+            TimeConstraintViolationException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handle409ErrorCode(ParentApiException pae) {
         return new ApiError(pae);
