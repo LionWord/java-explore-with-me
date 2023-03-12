@@ -6,9 +6,11 @@ import com.lionword.mainservice.entity.event.EventFullDto;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.util.List;
 
 @Entity
@@ -23,9 +25,11 @@ public class UserDto {
     private long id;
     @Column(name = "email")
     @NonNull
+    @Email
     private String email;
     @Column(name = "name")
     @NonNull
+    @Length(max = 50)
     private String name;
     @JsonIgnore
     @OneToMany(mappedBy = "initiator")

@@ -8,6 +8,7 @@ import com.lionword.mainservice.entity.location.Location;
 import com.lionword.mainservice.entity.user.UserDto;
 import lombok.*;
 import org.hibernate.Hibernate;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.*;
@@ -29,6 +30,7 @@ public class EventFullDto {
     private Long id;
     @Column(name = "annotation")
     @NonNull
+    @Length(min = 20, max = 2000)
     private String annotation;
     @JoinColumn(name = "category")
     @NonNull
@@ -40,6 +42,7 @@ public class EventFullDto {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdOn = LocalDateTime.now();
     @Column(name = "description")
+    @Length(min = 20, max = 7000)
     private String description;
     @Column(name = "event_date")
     @NonNull
@@ -68,6 +71,7 @@ public class EventFullDto {
     private EventState state = EventState.PENDING;
     @Column(name = "title")
     @NonNull
+    @Length(min = 3, max = 120)
     private String title;
     @Column(name = "views")
     private long views = 0;
