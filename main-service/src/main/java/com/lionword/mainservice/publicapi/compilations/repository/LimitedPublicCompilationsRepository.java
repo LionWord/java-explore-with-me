@@ -8,12 +8,12 @@ import org.springframework.data.repository.Repository;
 import java.util.Optional;
 
 @NoRepositoryBean
-public interface LimitedPublicCompilationsRepository<Compilation, Long> extends Repository<Compilation, Long> {
+public interface LimitedPublicCompilationsRepository<T, S> extends Repository<T, S> {
 
-    Page<Compilation> findAllByPinned(boolean isPinned, Pageable pageable);
+    Page<T> findAllByPinned(boolean isPinned, Pageable pageable);
 
-    Page<Compilation> findAll(Pageable pageable);
+    Page<T> findAll(Pageable pageable);
 
-    Optional<Compilation> findById(long compId);
+    Optional<T> findById(long compId);
 
 }

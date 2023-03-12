@@ -10,14 +10,14 @@ import org.springframework.data.repository.Repository;
 import java.util.Optional;
 
 @NoRepositoryBean
-public interface LimitedPrivateEventsRepository<EventFullDto, Long> extends Repository<EventFullDto, Long> {
-    Page<EventFullDto> findAllByInitiatorId(long initiatorId, Pageable pageable);
+public interface LimitedPrivateEventsRepository<T, S> extends Repository<T, S> {
+    Page<T> findAllByInitiatorId(long initiatorId, Pageable pageable);
 
-    Optional<EventFullDto> findAllByIdAndInitiatorId(long eventId, long initiatorId);
+    Optional<T> findAllByIdAndInitiatorId(long eventId, long initiatorId);
 
-    EventFullDto save(EventFullDto event);
+    T save(T event);
 
-    Optional<EventFullDto> findById(long eventId);
+    Optional<T> findById(long eventId);
 
     @Modifying
     @Query("UPDATE EventFullDto e SET e.confirmedRequests = e.confirmedRequests + :confirmedRequestsAmount" +
