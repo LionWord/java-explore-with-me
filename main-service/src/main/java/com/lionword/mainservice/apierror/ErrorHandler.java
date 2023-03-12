@@ -14,7 +14,16 @@ public class ErrorHandler {
     @ExceptionHandler({NotUniqueUsernameException.class,
             NotUniqueCategoryNameException.class,
             HaveLinkedEventsException.class,
-            TimeConstraintViolationException.class})
+            TimeConstraintViolationException.class,
+            AlreadyPublishedException.class,
+            PublishingAlreadyCancelledEventException.class,
+            CancellingPublishedEventException.class,
+            RepeatedRequestException.class,
+            OwnEventParticipationRequestException.class,
+            NotPublishedEventException.class,
+            ParticipationLimitReachedException.class,
+            AlteringAlreadyPublishedEventException.class,
+            NotPendingRequestStatusChangingException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handle409ErrorCode(ParentApiException pae) {
         return new ApiError(pae);
@@ -23,6 +32,12 @@ public class ErrorHandler {
     @ExceptionHandler(NoSuchEntryException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError handle404ErrorCode(ParentApiException pae) {
+        return new ApiError(pae);
+    }
+
+    @ExceptionHandler(InvalidInputException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handle400ErrorCode(ParentApiException pae) {
         return new ApiError(pae);
     }
 }

@@ -1,5 +1,6 @@
 package com.lionword.mainservice.privateapi.events.service;
 
+import com.lionword.mainservice.apierror.exceptions.ExceptionTemplates;
 import com.lionword.mainservice.entity.event.EventFullDto;
 import com.lionword.mainservice.entity.event.EventShortDto;
 import com.lionword.mainservice.entity.event.EventState;
@@ -46,12 +47,16 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
     public EventFullDto addEvent(long userId, EventFullDto event) {
         LocalDateTime createdOn = LocalDateTime.now();
         if (event.getEventDate().minusHours(2).isBefore(createdOn)) {
-            //stub
-            throw new RuntimeException();
+            ExceptionTemplates.eventTooEarlyAfterCreation();
         }
-        event.setInitiator(userRepo.findById(userId).orElseThrow());
+        if (event.getEventDate().isBefore(createdOn)) {
+            ExceptionTemplates.eventInPast();
+        }
+        event.setInitiator(userRepo.findById(userId)
+                .orElseThrow(ExceptionTemplates::userNotFound));
         event.setState(EventState.PENDING);
-        event.setCategory(categoryRepo.findById(event.getCategory().getId()).orElseThrow());
+        event.setCategory(categoryRepo.findById(event.getCategory().getId())
+                .orElseThrow(ExceptionTemplates::categoryNotFound));
         event = eventRepo.save(event);
         Location location = event.getLocation();
         locationRepo.save(event.getLocation());
@@ -66,22 +71,26 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
     @Override
     @Transactional
     public EventFullDto getEventByInitiatorAndId(long userId, long eventId) {
-        return eventRepo.findAllByIdAndInitiatorId(eventId, userId).orElseThrow();
+        return eventRepo.findAllByIdAndInitiatorId(eventId, userId)
+                .orElseThrow(ExceptionTemplates::eventNotFound);
     }
 
     @Override
     public EventFullDto updateEvent(long userId, long eventId, UpdateEventUserRequest updateEvent) {
-        EventFullDto event = eventRepo.findAllByIdAndInitiatorId(eventId, userId).orElseThrow();
+        EventFullDto event = eventRepo.findAllByIdAndInitiatorId(eventId, userId)
+                .orElseThrow(ExceptionTemplates::eventNotFound);
         if (event.getState().equals(EventState.PUBLISHED)) {
-            //stub
-            throw new RuntimeException();
+            ExceptionTemplates.alteringAlreadyPublishedEvent();
         }
         if (updateEvent.getEventDate() != null) {
-            if (updateEvent.getEventDate().minusHours(2).isBefore(LocalDateTime.from(Instant.now()))) {
-                //stub
-                throw new RuntimeException();
+            if (updateEvent.getEventDate().isBefore(LocalDateTime.now())) {
+                ExceptionTemplates.eventInPast();
+            }
+            if (updateEvent.getEventDate().minusHours(2).isBefore(LocalDateTime.now())) {
+                ExceptionTemplates.eventTooEarlyAfterCreation();
             }
         }
+
         return eventRepo.save(updateEvent(event, updateEvent));
     }
 
@@ -93,21 +102,38 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
     @Override
     public EventRequestStatusUpdateResult changeRequestStatus(long userId, long eventId, EventRequestStatusUpdateRequest updateRequestStatus) {
         EventRequestStatusUpdateResult result = new EventRequestStatusUpdateResult();
-        EventFullDto event = eventRepo.findById(eventId).orElseThrow();
+        int availableSlots;
+        EventFullDto event = eventRepo.findById(eventId)
+                .orElseThrow(ExceptionTemplates::eventNotFound);
         ArrayList<ParticipationRequestDto> requests = updateRequestStatus.getRequestIds().stream()
                 .map(participationRepo::findById)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        if (event.getParticipantLimit() == 0 || !event.isRequestModeration()) {
+        if (event.getParticipantLimit() == 0 & !event.isRequestModeration()) {
             result.setConfirmedRequests(requests);
+            event.setConfirmedRequests(event.getConfirmedRequests() + result.getConfirmedRequests().size());
+            eventRepo.save(event);
             return result;
         }
 
-        if (event.getConfirmedRequests() == event.getParticipantLimit()) {
-            //stub exception
-            throw new RuntimeException();
+        availableSlots = event.getParticipantLimit() - event.getConfirmedRequests();
+
+        if (availableSlots == 0) {
+            ExceptionTemplates.participationLimitExceeded();
+        }
+
+        if (event.getParticipantLimit() != 0 & !event.isRequestModeration()) {
+            result.setConfirmedRequests(requests.stream()
+                    .limit(availableSlots)
+                    .collect(Collectors.toCollection(ArrayList::new)));
+            result.setRejectedRequests(requests.stream()
+                    .skip(availableSlots)
+                    .collect(Collectors.toCollection(ArrayList::new)));
+            event.setConfirmedRequests(event.getConfirmedRequests() + result.getConfirmedRequests().size());
+            eventRepo.save(event);
+            return result;
         }
 
         boolean haveNonPendingRequests = requests.stream()
@@ -115,12 +141,17 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
                         || participationRequestDto.getStatus().equals(RequestState.REJECTED));
 
         if (haveNonPendingRequests) {
-            //stub exception
-            throw new RuntimeException();
+            ExceptionTemplates.changingNonPendingRequestStatus();
         }
 
-        int availableSlots = event.getParticipantLimit() - event.getConfirmedRequests();
-        //my code
+        if (event.getParticipantLimit() == 0 & event.isRequestModeration()) {
+            result.setConfirmedRequests(requests);
+            event.setConfirmedRequests(event.getConfirmedRequests() + result.getConfirmedRequests().size());
+            eventRepo.save(event);
+            return result;
+        }
+
+    //    availableSlots = event.getParticipantLimit() - event.getConfirmedRequests();
         for (int i = 0; i <= availableSlots; i++) {
             if (i == availableSlots & i < requests.size()) {
                 requests = new ArrayList<>(requests.subList(i, requests.size()));

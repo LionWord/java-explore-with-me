@@ -1,5 +1,6 @@
 package com.lionword.mainservice.privateapi.participationrequests.service;
 
+import com.lionword.mainservice.apierror.exceptions.ExceptionTemplates;
 import com.lionword.mainservice.entity.event.EventFullDto;
 import com.lionword.mainservice.entity.event.EventState;
 import com.lionword.mainservice.entity.participation.ParticipationRequestDto;
@@ -28,22 +29,18 @@ public class PrivateParticipationServiceImpl implements PrivateParticipationServ
     public ParticipationRequestDto addParticipationRequest(long userId, long eventId) {
         EventFullDto event = eventsRepository.findById(eventId).orElseThrow();
         if (!participationRepository.findAllByEventAndRequester(eventId, userId).isEmpty()) {
-            //stub
-            throw new RuntimeException();
+            ExceptionTemplates.repeatedRequest();
         }
         if (event.getInitiator().getId() == userId) {
-            //stub
-            throw new RuntimeException();
+            ExceptionTemplates.requestToParticipateInOwnEvent();
         }
 
         if (!event.getState().equals(EventState.PUBLISHED)) {
-            //stub
-            throw new RuntimeException();
+            ExceptionTemplates.notPublishedEventParticipation();
         }
 
         if (event.getParticipantLimit() == event.getConfirmedRequests()) {
-            //stub
-            throw new RuntimeException();
+            ExceptionTemplates.participationLimitExceeded();
         }
 
         ParticipationRequestDto newRequest = new ParticipationRequestDto();
