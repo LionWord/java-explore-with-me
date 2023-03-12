@@ -1,5 +1,6 @@
 package com.lionword.mainservice.publicapi.events.service;
 
+import com.lionword.mainservice.apierror.ExceptionTemplates;
 import com.lionword.mainservice.entity.event.EventFullDto;
 import com.lionword.mainservice.entity.event.EventShortDto;
 import com.lionword.mainservice.entity.event.EventSort;
@@ -67,10 +68,12 @@ public class PublicEventsServiceImpl implements PublicEventsService {
         return List.of();
 
     }
+
     @Override
     @Transactional
     public EventFullDto getEventById(long id) {
-        EventFullDto event = eventRepo.findById(id).orElseThrow();
+        EventFullDto event = eventRepo.findById(id)
+                .orElseThrow(ExceptionTemplates::eventNotFound);
         if (!event.getState().equals(EventState.PUBLISHED)) {
             //stub
             throw new RuntimeException();

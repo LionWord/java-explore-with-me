@@ -27,7 +27,6 @@ public class PrivateEventsController {
         return privateEventsService.getEvents(from, size, userId);
     }
 
-    /*Обратите внимание: дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента*/
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public EventFullDto addEvent(@PathVariable long userId, @RequestBody EventFullDto event) {
@@ -39,11 +38,6 @@ public class PrivateEventsController {
         return privateEventsService.getEventByInitiatorAndId(userId, eventId);
     }
 
-
-    /*Обратите внимание:
-
-    изменить можно только отмененные события или события в состоянии ожидания модерации (Ожидается код ошибки 409)
-    дата и время на которые намечено событие не может быть раньше, чем через два часа от текущего момента (Ожидается код ошибки 409)*/
     @PatchMapping("/{eventId}")
     public EventFullDto updateEvent(@PathVariable long userId, @PathVariable long eventId,
                                     @RequestBody UpdateEventUserRequest updateEvent) {
@@ -55,12 +49,6 @@ public class PrivateEventsController {
         return privateEventsService.getParticipationRequests(userId, eventId);
     }
 
-    /*Обратите внимание:
-
-    если для события лимит заявок равен 0 или отключена пре-модерация заявок, то подтверждение заявок не требуется
-    нельзя подтвердить заявку, если уже достигнут лимит по заявкам на данное событие (Ожидается код ошибки 409)
-    статус можно изменить только у заявок, находящихся в состоянии ожидания (Ожидается код ошибки 409)
-    если при подтверждении данной заявки, лимит заявок для события исчерпан, то все неподтверждённые заявки необходимо отклонить*/
     @PatchMapping("/{eventId}/requests")
     public EventRequestStatusUpdateResult changeRequestStatus(@PathVariable long userId, @PathVariable long eventId,
                                                               @RequestBody EventRequestStatusUpdateRequest updateRequestStatus) {

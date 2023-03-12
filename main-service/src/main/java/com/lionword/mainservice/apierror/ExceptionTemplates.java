@@ -1,6 +1,5 @@
 package com.lionword.mainservice.apierror;
 
-import com.lionword.mainservice.apierror.NotInitiatorException;
 import com.lionword.mainservice.apierror.exceptions.*;
 import org.springframework.http.HttpStatus;
 
@@ -63,7 +62,7 @@ public class ExceptionTemplates {
     }
 
     public static NoSuchEntryException categoryNotFound() {
-        throw new NoSuchEntryException (
+        throw new NoSuchEntryException(
                 HttpStatus.NOT_FOUND,
                 "Entry not found",
                 "Category entry was not found"
@@ -71,7 +70,7 @@ public class ExceptionTemplates {
     }
 
     public static NoSuchEntryException userNotFound() {
-        throw new NoSuchEntryException (
+        throw new NoSuchEntryException(
                 HttpStatus.NOT_FOUND,
                 "User not found",
                 "User entry was not found"
@@ -79,10 +78,26 @@ public class ExceptionTemplates {
     }
 
     public static NoSuchEntryException eventNotFound() {
-        throw new NoSuchEntryException (
+        throw new NoSuchEntryException(
                 HttpStatus.NOT_FOUND,
                 "Event not found",
                 "Event entry was not found"
+        );
+    }
+
+    public static NoSuchEntryException compilationNotFound() {
+        throw new NoSuchEntryException(
+                HttpStatus.NOT_FOUND,
+                "Compilation not found",
+                "Compilation entry was not found"
+        );
+    }
+
+    public static NoSuchEntryException requestNotFound() {
+        throw new NoSuchEntryException(
+                HttpStatus.NOT_FOUND,
+                "Request not found",
+                "Request entry was not found"
         );
     }
 

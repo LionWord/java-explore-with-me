@@ -11,5 +11,6 @@ import java.util.Optional;
 @Repository
 public interface AdminUserRepository extends JpaRepository<UserDto, Long> {
     List<UserDto> findAllByIdIn(List<Long> ids, Pageable pageable);
+
     Optional<UserDto> findByName(String name);
 }

@@ -7,7 +7,7 @@ import java.util.Arrays;
 
 public class InputValidator {
 
-    public static void checkDateInput(String...datesToParse) {
+    public static void checkDateInput(String... datesToParse) {
         try {
             Arrays.stream(datesToParse)
                     .map(s -> LocalDateTime.parse(s, TimeFormatter.DEFAULT))

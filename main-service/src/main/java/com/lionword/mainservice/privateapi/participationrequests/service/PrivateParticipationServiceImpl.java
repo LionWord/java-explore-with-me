@@ -6,8 +6,8 @@ import com.lionword.mainservice.entity.event.EventState;
 import com.lionword.mainservice.entity.participation.ParticipationRequestDto;
 import com.lionword.mainservice.entity.participation.RequestState;
 import com.lionword.mainservice.privateapi.repository.CrudParticipationRepository;
-import com.lionword.mainservice.privateapi.repository.PrivateParticipationRepository;
 import com.lionword.mainservice.privateapi.repository.PrivateEventsRepository;
+import com.lionword.mainservice.privateapi.repository.PrivateParticipationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class PrivateParticipationServiceImpl implements PrivateParticipationService{
+public class PrivateParticipationServiceImpl implements PrivateParticipationService {
     private final PrivateParticipationRepository participationRepository;
     private final CrudParticipationRepository crudParticipationRepository;
     private final PrivateEventsRepository eventsRepository;
@@ -25,9 +25,11 @@ public class PrivateParticipationServiceImpl implements PrivateParticipationServ
     public List<ParticipationRequestDto> getParticipationRequests(long userId) {
         return participationRepository.findAllByRequester(userId);
     }
+
     @Override
     public ParticipationRequestDto addParticipationRequest(long userId, long eventId) {
-        EventFullDto event = eventsRepository.findById(eventId).orElseThrow();
+        EventFullDto event = eventsRepository.findById(eventId)
+                .orElseThrow(ExceptionTemplates::eventNotFound);
         if (!participationRepository.findAllByEventAndRequester(eventId, userId).isEmpty()) {
             ExceptionTemplates.repeatedRequest();
         }
@@ -54,11 +56,13 @@ public class PrivateParticipationServiceImpl implements PrivateParticipationServ
         }
         return crudParticipationRepository.save(newRequest);
     }
+
     @Override
     public ParticipationRequestDto cancelParticipationRequest(long userId, long requestId) {
         ParticipationRequestDto request = participationRepository.findByIdAndRequester(requestId, userId)
-                .orElseThrow();
-        EventFullDto event = eventsRepository.findById(request.getEvent()).orElseThrow();
+                .orElseThrow(ExceptionTemplates::requestNotFound);
+        EventFullDto event = eventsRepository.findById(request.getEvent())
+                .orElseThrow(ExceptionTemplates::eventNotFound);
         if (request.getStatus().equals(RequestState.CONFIRMED)) {
             event.setConfirmedRequests(event.getConfirmedRequests() - 1);
             eventsRepository.save(event);

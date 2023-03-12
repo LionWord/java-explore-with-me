@@ -2,15 +2,14 @@ package com.lionword.mainservice.entity.category;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lionword.mainservice.entity.event.EventFullDto;
-import lombok.*;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-
-
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Entity

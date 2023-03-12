@@ -119,7 +119,6 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
         ArrayList<Long> confirmedRequestsIds = new ArrayList<>();
         ArrayList<Long> rejectedRequestsIds = new ArrayList<>();
 
-        //no participant limit and no moderation
         if (event.getParticipantLimit() == 0 & !event.isRequestModeration()) {
             result.setConfirmedRequests(requests);
             event.setConfirmedRequests(event.getConfirmedRequests() + result.getConfirmedRequests().size());
@@ -136,7 +135,6 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
             ExceptionTemplates.changingNonPendingRequestStatus();
         }
 
-        //no participant limit, but got moderation
         if (event.getParticipantLimit() == 0 & event.isRequestModeration()) {
             if (updateRequestStatus.getStatus().equals(RequestState.CONFIRMED)) {
                 result.setConfirmedRequests(requests);
@@ -155,7 +153,6 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
             ExceptionTemplates.participationLimitExceeded();
         }
 
-        //got participant limit and no moderation
         if (event.getParticipantLimit() != 0 & !event.isRequestModeration()) {
             result.setConfirmedRequests(requests.stream()
                     .limit(availableSlots)
@@ -171,29 +168,6 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
             eventRepo.save(event);
             return result;
         }
-
-        /*boolean haveNonPendingRequests = requests.stream()
-                .anyMatch(participationRequestDto -> participationRequestDto.getStatus().equals(RequestState.CONFIRMED)
-                        || participationRequestDto.getStatus().equals(RequestState.REJECTED));
-
-        if (haveNonPendingRequests) {
-            ExceptionTemplates.changingNonPendingRequestStatus();
-        }
-
-        //no participant limit, but got moderation
-        if (event.getParticipantLimit() == 0 & event.isRequestModeration()) {
-            if (updateRequestStatus.getStatus().equals(RequestState.CONFIRMED)) {
-                result.setConfirmedRequests(requests);
-                event.setConfirmedRequests(event.getConfirmedRequests() + result.getConfirmedRequests().size());
-                eventRepo.save(event);
-            } else {
-                result.setRejectedRequests(requests);
-            }
-
-            return result;
-        }*/
-
-        //got participant limit and moderation
 
         for (int i = 0; i <= availableSlots; i++) {
             if (i == availableSlots & i < requests.size()) {
@@ -226,7 +200,8 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
             event.setAnnotation(newInfo.getAnnotation());
         }
         if (newInfo.getCategory() != null) {
-            event.setCategory(categoryRepo.findById(newInfo.getCategory()).orElseThrow());
+            event.setCategory(categoryRepo.findById(newInfo.getCategory())
+                    .orElseThrow(ExceptionTemplates::categoryNotFound));
         }
         if (newInfo.getDescription() != null) {
             event.setDescription(newInfo.getDescription());

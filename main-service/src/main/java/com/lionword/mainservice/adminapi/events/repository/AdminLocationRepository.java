@@ -17,6 +17,7 @@ public interface AdminLocationRepository extends JpaRepository<Location, Long> {
     void updateEventLocation(@Param("lat") float lat,
                              @Param("lon") float lon,
                              @Param("eventId") long eventId);
+
     Location findByEventId(long eventId);
 
 }

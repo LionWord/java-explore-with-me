@@ -2,6 +2,7 @@ package com.lionword.mainservice.adminapi.compilations.service;
 
 import com.lionword.mainservice.adminapi.compilations.repository.AdminCompilationsRepository;
 import com.lionword.mainservice.adminapi.events.repository.AdminEventsRepository;
+import com.lionword.mainservice.apierror.ExceptionTemplates;
 import com.lionword.mainservice.entity.compilation.Compilation;
 import com.lionword.mainservice.entity.compilation.CompilationDto;
 import com.lionword.mainservice.entity.compilation.NewCompilationDto;
@@ -9,7 +10,6 @@ import com.lionword.mainservice.entity.compilation.UpdateCompilationRequest;
 import com.lionword.mainservice.entity.event.EventFullDto;
 import com.lionword.mainservice.entity.util.CompilationsMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,7 +40,8 @@ public class AdminCompilationsServiceImpl implements AdminCompilationsService {
     }
 
     public CompilationDto updateCompilation(long compId, UpdateCompilationRequest updatedCompilation) {
-        Compilation compilation = compilationsRepository.findById(compId).orElseThrow();
+        Compilation compilation = compilationsRepository.findById(compId)
+                .orElseThrow(ExceptionTemplates::compilationNotFound);
         if (updatedCompilation.getPinned() != null) {
             compilation.setPinned(updatedCompilation.getPinned());
         }
