@@ -3,7 +3,12 @@ package com.lionword.mainservice.entity.category;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lionword.mainservice.entity.event.EventFullDto;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.ReadOnlyProperty;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,7 +18,6 @@ import java.util.List;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@NoArgsConstructor
 public class CategoryDto {
 
     @Id
@@ -22,7 +26,8 @@ public class CategoryDto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "name")
-    @NonNull
+    @NotBlank
+    @Length(max = 50)
     private String name;
     @JsonIgnore
     @OneToMany(mappedBy = "category")

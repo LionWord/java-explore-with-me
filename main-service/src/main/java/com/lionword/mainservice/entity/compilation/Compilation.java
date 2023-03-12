@@ -4,6 +4,7 @@ import com.lionword.mainservice.entity.event.EventFullDto;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.*;
@@ -29,5 +30,6 @@ public class Compilation {
     private Boolean pinned;
     @Column(name = "title")
     @NonNull
+    @Length(max = 128)
     private String title;
 }
