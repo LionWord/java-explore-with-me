@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
+import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 @Getter
 @Setter
@@ -21,4 +22,12 @@ public class ApiError {
         this.message = exception.getMessage();
         this.timestamp = exception.getTimestamp();
     }
+
+    public ApiError(ConstraintViolationException cve) {
+        this.status = HttpStatus.BAD_REQUEST;
+        this.reason = "Constraint violation";
+        this.message = cve.getMessage();
+        this.timestamp = LocalDateTime.now();
+    }
+
 }

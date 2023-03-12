@@ -12,6 +12,8 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Set;
@@ -19,7 +21,6 @@ import java.util.Set;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@NoArgsConstructor
 @Entity
 @Table(name = "events")
 public class EventFullDto {
@@ -29,11 +30,11 @@ public class EventFullDto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(name = "annotation")
-    @NonNull
+    @NotBlank
     @Length(min = 20, max = 2000)
     private String annotation;
     @JoinColumn(name = "category")
-    @NonNull
+    @NotNull
     @ManyToOne
     private CategoryDto category;
     @Column(name = "confirmed_requests")
@@ -43,21 +44,22 @@ public class EventFullDto {
     private LocalDateTime createdOn = LocalDateTime.now();
     @Column(name = "description")
     @Length(min = 20, max = 7000)
+    @NotBlank
     private String description;
     @Column(name = "event_date")
-    @NonNull
+    @NotNull
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime eventDate;
-    @NonNull
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "initiator")
     private UserDto initiator;
-    @NonNull
+    @NotNull
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location", referencedColumnName = "id")
     private Location location;
     @Column(name = "paid")
-    @NonNull
+    @NotNull
     private Boolean paid;
     @Column(name = "participant_limit")
     private int participantLimit;
@@ -70,7 +72,7 @@ public class EventFullDto {
     @Enumerated(EnumType.STRING)
     private EventState state = EventState.PENDING;
     @Column(name = "title")
-    @NonNull
+    @NotBlank
     @Length(min = 3, max = 120)
     private String title;
     @Column(name = "views")

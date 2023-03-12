@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
+
 @RestControllerAdvice
 public class ErrorHandler {
 
@@ -36,7 +38,14 @@ public class ErrorHandler {
 
     @ExceptionHandler(InvalidInputException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ApiError handle400ErrorCode(ParentApiException pae) {
+    public ApiError handleGeneric400ErrorCode(ParentApiException pae) {
         return new ApiError(pae);
     }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleConstraintViolation(ConstraintViolationException cve) {
+        return new ApiError(cve);
+    }
+
 }
