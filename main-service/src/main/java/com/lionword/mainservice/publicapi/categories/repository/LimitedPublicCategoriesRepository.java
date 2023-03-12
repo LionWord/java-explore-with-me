@@ -8,8 +8,8 @@ import org.springframework.data.repository.Repository;
 import java.util.Optional;
 
 @NoRepositoryBean
-public interface LimitedPublicCategoriesRepository<CategoryDto, Long> extends Repository<CategoryDto, Long> {
-    Page<CategoryDto> findAll(Pageable pageable);
+public interface LimitedPublicCategoriesRepository<T, S> extends Repository<T, S> {
+    Page<T> findAll(Pageable pageable);
 
-    Optional<CategoryDto> findById(long catId);
+    Optional<T> findById(long catId);
 }

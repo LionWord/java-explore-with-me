@@ -6,6 +6,6 @@ import org.springframework.data.repository.Repository;
 import java.util.Optional;
 
 @NoRepositoryBean
-public interface LimitedPrivateUserRepository<UserDto, Long> extends Repository<UserDto, Long> {
-    Optional<UserDto> findById(long userId);
+public interface LimitedPrivateUserRepository<T, S> extends Repository<T, S> {
+    Optional<T> findById(long userId);
 }

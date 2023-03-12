@@ -11,9 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 @NoRepositoryBean
-public interface LimitedPublicEventsRepository<EventFullDto, Long> extends Repository<EventFullDto, Long> {
+public interface LimitedPublicEventsRepository<T, S> extends Repository<T, S> {
 
-    Optional<EventFullDto> findById(long eventId);
+    Optional<T> findById(long eventId);
 
     @Modifying
     @Query("UPDATE EventFullDto e SET e.views = e.views + 1" +
@@ -23,7 +23,7 @@ public interface LimitedPublicEventsRepository<EventFullDto, Long> extends Repos
     @Modifying
     @Query("UPDATE EventFullDto e SET e.views = e.views + 1" +
             "WHERE e.id IN :eventIds")
-    void addViewToMultipleEvents(List<Long> eventIds);
+    void addViewToMultipleEvents(List<S> eventIds);
 
     @Query("SELECT e FROM EventFullDto e " +
             "JOIN FETCH CategoryDto cd ON e.category=cd " +
@@ -37,13 +37,13 @@ public interface LimitedPublicEventsRepository<EventFullDto, Long> extends Repos
             "AND e.eventDate <= :rangeEnd " +
             "AND e.paid = :paid " +
             "ORDER BY e.eventDate DESC")
-    List<EventFullDto> searchEventByCriteriaSortByDate(String text,
-                                                       List<Long> categories,
-                                                       Boolean paid,
-                                                       LocalDateTime rangeStart,
-                                                       LocalDateTime rangeEnd,
-                                                       Boolean onlyAvailable,
-                                                       Pageable pageable);
+    List<T> searchEventByCriteriaSortByDate(String text,
+                                            List<S> categories,
+                                            Boolean paid,
+                                            LocalDateTime rangeStart,
+                                            LocalDateTime rangeEnd,
+                                            Boolean onlyAvailable,
+                                            Pageable pageable);
 
     @Query("SELECT e FROM EventFullDto e " +
             "JOIN FETCH CategoryDto cd ON e.category=cd " +
@@ -57,13 +57,13 @@ public interface LimitedPublicEventsRepository<EventFullDto, Long> extends Repos
             "AND e.eventDate <= :rangeEnd " +
             "AND e.paid = :paid " +
             "ORDER BY e.views DESC ")
-    List<EventFullDto> searchEventByCriteriaSortByViews(String text,
-                                                        List<Long> categories,
-                                                        Boolean paid,
-                                                        LocalDateTime rangeStart,
-                                                        LocalDateTime rangeEnd,
-                                                        Boolean onlyAvailable,
-                                                        Pageable pageable);
+    List<T> searchEventByCriteriaSortByViews(String text,
+                                             List<S> categories,
+                                             Boolean paid,
+                                             LocalDateTime rangeStart,
+                                             LocalDateTime rangeEnd,
+                                             Boolean onlyAvailable,
+                                             Pageable pageable);
 
 }
 

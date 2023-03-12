@@ -9,8 +9,8 @@ import org.springframework.data.repository.query.Param;
 import javax.transaction.Transactional;
 
 @NoRepositoryBean
-public interface LimitedPrivateLocationRepository<Location, Long> extends Repository<Location, Long> {
-    Location save(Location location);
+public interface LimitedPrivateLocationRepository<T, S> extends Repository<T, S> {
+    T save(T location);
 
     @Modifying
     @Query("UPDATE Location l " +
@@ -21,5 +21,5 @@ public interface LimitedPrivateLocationRepository<Location, Long> extends Reposi
                              @Param("lon") float lon1,
                              @Param("eventId") long eventId);
 
-    Location findByEventId(long eventId);
+    T findByEventId(long eventId);
 }

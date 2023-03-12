@@ -11,27 +11,27 @@ import java.util.List;
 import java.util.Optional;
 
 @NoRepositoryBean
-public interface LimitedPrivateParticipationRepository<ParticipationRequestDto, Long> extends Repository<ParticipationRequestDto, Long> {
-    List<ParticipationRequestDto> findAllByEventAndRequester(long eventId, long userId);
+public interface LimitedPrivateParticipationRepository<T, S> extends Repository<T, S> {
+    List<T> findAllByEventAndRequester(long eventId, long userId);
 
-    List<ParticipationRequestDto> findAllByEvent(long eventId);
+    List<T> findAllByEvent(long eventId);
 
-    Optional<ParticipationRequestDto> findById(long requestId);
+    Optional<T> findById(long requestId);
 
-    List<ParticipationRequestDto> findAllByRequester(long userId);
+    List<T> findAllByRequester(long userId);
 
-    Optional<ParticipationRequestDto> findByIdAndRequester(long requestId, long userId);
+    Optional<T> findByIdAndRequester(long requestId, long userId);
 
     @Modifying
     @Transactional
     @Query("UPDATE ParticipationRequestDto SET status = :status " +
             "WHERE id IN :ids")
-    void changeParticipationRequestsStatus(List<Long> ids, RequestState status);
+    void changeParticipationRequestsStatus(List<S> ids, RequestState status);
 
     @Modifying
     @Transactional
     @Query("UPDATE ParticipationRequestDto SET status = :status " +
             "WHERE id = :id")
-    void changeSingleParticipationRequestStatus(Long id, RequestState status);
+    void changeSingleParticipationRequestStatus(S id, RequestState status);
 
 }
