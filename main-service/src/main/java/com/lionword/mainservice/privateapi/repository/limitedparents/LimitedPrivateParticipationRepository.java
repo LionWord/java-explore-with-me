@@ -1,5 +1,6 @@
 package com.lionword.mainservice.privateapi.repository.limitedparents;
 
+import com.lionword.mainservice.entity.participation.ParticipationRequestDto;
 import com.lionword.mainservice.entity.participation.RequestState;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -13,6 +14,7 @@ import java.util.Optional;
 public interface LimitedPrivateParticipationRepository<ParticipationRequestDto, Long> extends Repository<ParticipationRequestDto, Long> {
     List<ParticipationRequestDto> findAllByEventAndRequester(long eventId, long userId);
 
+    List<ParticipationRequestDto> findAllByEvent(long eventId);
     Optional<ParticipationRequestDto> findById(long requestId);
 
     List<ParticipationRequestDto> findAllByRequester(long userId);
@@ -23,6 +25,12 @@ public interface LimitedPrivateParticipationRepository<ParticipationRequestDto, 
     @Transactional
     @Query("UPDATE ParticipationRequestDto SET status = :status " +
             "WHERE id IN :ids")
-    void changeMultipleParticipationRequestsStatus(List<Long> ids, RequestState status);
+    void changeParticipationRequestsStatus(List<Long> ids, RequestState status);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE ParticipationRequestDto SET status = :status " +
+            "WHERE id = :id")
+    void changeSingleParticipationRequestStatus(Long id, RequestState status);
 
 }
