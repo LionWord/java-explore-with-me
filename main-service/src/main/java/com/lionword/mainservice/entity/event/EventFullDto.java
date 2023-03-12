@@ -35,7 +35,7 @@ public class EventFullDto {
     @ManyToOne
     private CategoryDto category;
     @Column(name = "confirmed_requests")
-    private int confirmedRequests;
+    private int confirmedRequests = 0;
     @Column(name = "created_on")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createdOn = LocalDateTime.now();
@@ -65,12 +65,12 @@ public class EventFullDto {
     private boolean requestModeration;
     @Column(name = "state")
     @Enumerated(EnumType.STRING)
-    private EventState state;
+    private EventState state = EventState.PENDING;
     @Column(name = "title")
     @NonNull
     private String title;
     @Column(name = "views")
-    private long views;
+    private long views = 0;
     @ManyToMany(mappedBy = "events")
     @JsonIgnore
     private Set<Compilation> compilationsIncludingThisEvent;

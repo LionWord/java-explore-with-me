@@ -2,6 +2,7 @@ package com.lionword.mainservice.adminapi.categories.service;
 
 import com.lionword.mainservice.adminapi.categories.repository.AdminCategoriesRepository;
 import com.lionword.mainservice.adminapi.events.repository.AdminEventsRepository;
+import com.lionword.mainservice.apierror.exceptions.ExceptionTemplates;
 import com.lionword.mainservice.apierror.exceptions.HaveLinkedEventsException;
 import com.lionword.mainservice.apierror.exceptions.NoSuchEntryException;
 import com.lionword.mainservice.apierror.exceptions.NotUniqueCategoryNameException;
@@ -36,7 +37,8 @@ public class AdminCategoriesServiceImpl implements AdminCategoriesService {
 
     public CategoryDto updateCategory(NewCategoryDto updatedCategory, long catId) {
         checkIfCategoryNameIsUnique(updatedCategory.getName());
-        CategoryDto category = categoriesRepository.findById(catId).orElseThrow();
+        CategoryDto category = categoriesRepository.findById(catId)
+                .orElseThrow(ExceptionTemplates::categoryNotFound);
         category.setName(updatedCategory.getName());
         return categoriesRepository.save(category);
     }
@@ -45,29 +47,18 @@ public class AdminCategoriesServiceImpl implements AdminCategoriesService {
 
     private void checkIfCategoryNameIsUnique(String name) {
         if (categoriesRepository.findByName(name).isPresent()) {
-            throw new NotUniqueCategoryNameException(HttpStatus.CONFLICT,
-                    "Not unique category name",
-                    "Category name must be unique. Current value: " + name);
+            ExceptionTemplates.notUniqueName();
         }
     }
 
     private void checkIfGotConnectedEvents(long catId) {
-        CategoryDto category = categoriesRepository.findById(catId).orElseThrow(
-                () -> new NoSuchEntryException (
-                HttpStatus.NOT_FOUND,
-                "Entry not found",
-                "Category entry with id " + catId + " was not found"
-                )
-        );
+        CategoryDto category = categoriesRepository.findById(catId)
+                .orElseThrow(ExceptionTemplates::categoryNotFound);
         if (!category.getEvents().isEmpty()) {
             List<Long> eventsIds = category.getEvents().stream()
                     .map(EventFullDto::getId)
                     .collect(Collectors.toList());
-            throw new HaveLinkedEventsException(
-                    HttpStatus.CONFLICT,
-                    "Linked events",
-                    "This category got linked events: " + eventsIds
-            );
+            ExceptionTemplates.haveLinkedEvents(eventsIds);
         }
     }
 
