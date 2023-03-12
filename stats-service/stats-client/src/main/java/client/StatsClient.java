@@ -1,6 +1,10 @@
 package client;
 
 import dto.EndpointHit;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +19,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
+@Getter
+@Setter
+
 public class StatsClient extends BasicClient {
 
     public StatsClient(@Value("${stats-service.url}") String url, RestTemplateBuilder builder) {

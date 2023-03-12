@@ -19,14 +19,12 @@ public class AdminUserController {
     public List<UserDto> getUsers(@RequestParam(name = "ids") List<Long> ids,
                                   @RequestParam(name = "from", defaultValue = "0") int from,
                                   @RequestParam(name = "size", defaultValue = "10") int size) {
-        //stub
         return adminUserService.getUsers(ids, from, size);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto createUser(@RequestBody UserDto user) {
-        //stub
         return adminUserService.createUser(user);
     }
 

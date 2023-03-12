@@ -1,5 +1,6 @@
 package com.lionword.mainservice.publicapi.events;
 
+import client.StatsClient;
 import com.lionword.mainservice.entity.event.EventFullDto;
 import com.lionword.mainservice.entity.event.EventShortDto;
 import com.lionword.mainservice.entity.event.EventSort;
@@ -7,6 +8,7 @@ import com.lionword.mainservice.publicapi.events.service.PublicEventsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @RestController
@@ -15,15 +17,7 @@ import java.util.List;
 public class PublicEventsController {
 
     private final PublicEventsService publicEventsService;
-
-    /*Обратите внимание:
--это публичный эндпоинт, соответственно в выдаче должны быть только опубликованные события
--текстовый поиск (по аннотации и подробному описанию) должен быть без учета регистра букв
--если в запросе не указан диапазон дат [rangeStart-rangeEnd], то нужно выгружать события, которые произойдут позже текущей даты и времени
--информация о каждом событии должна включать в себя количество просмотров и количество уже одобренных заявок на участие
--информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики
--в случае, если по заданным фильтрам не найдено ни одного события, возвращает пустой список*/
-
+    private final StatsClient client;
 
     @GetMapping
     public List<EventShortDto> getEvents(@RequestParam(name = "text", required = false) String text,
@@ -34,19 +28,15 @@ public class PublicEventsController {
                                          @RequestParam(name = "onlyAvailable", required = false) Boolean onlyAvailable,
                                          @RequestParam(name = "sort", required = false, defaultValue = "EVENT_DATE") EventSort sort,
                                          @RequestParam(name = "from", required = false, defaultValue = "0") int from,
-                                         @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
+                                         @RequestParam(name = "size", required = false, defaultValue = "10") int size,
+                                         HttpServletRequest request) {
+        client.saveHit(request);
         return publicEventsService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
     }
 
-    /*Обратите внимание:
-
-    -событие должно быть опубликовано
-    -информация о событии должна включать в себя количество просмотров и количество подтвержденных запросов
-    -информацию о том, что по этому эндпоинту был осуществлен и обработан запрос, нужно сохранить в сервисе статистики
-    -в случае, если события с заданным id не найдено, возвращает статус код 404*/
-
     @GetMapping("/{id}")
-    public EventFullDto getEventById(@PathVariable long id) {
+    public EventFullDto getEventById(@PathVariable long id, HttpServletRequest request) {
+        client.saveHit(request);
         return publicEventsService.getEventById(id);
     }
 
