@@ -8,6 +8,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.data.annotation.ReadOnlyProperty;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Getter
@@ -29,7 +30,7 @@ public class Compilation {
     @NonNull
     private Boolean pinned;
     @Column(name = "title")
-    @NonNull
+    @NotBlank
     @Length(max = 128)
     private String title;
 }
