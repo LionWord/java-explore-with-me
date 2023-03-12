@@ -26,15 +26,15 @@ public class PublicEventsController {
 
 
     @GetMapping
-    public List<EventShortDto> getEvents(@RequestParam(name = "text") String text,
-                                         @RequestParam(name = "categories") List<Long> categories,
-                                         @RequestParam(name = "paid") Boolean paid,
-                                         @RequestParam(name = "rangeStart") String rangeStart,
-                                         @RequestParam(name = "rangeEnd") String rangeEnd,
-                                         @RequestParam(name = "onlyAvailable") Boolean onlyAvailable,
-                                         @RequestParam(name = "sort") EventSort sort,
-                                         @RequestParam(name = "from") int from,
-                                         @RequestParam(name = "size") int size) {
+    public List<EventShortDto> getEvents(@RequestParam(name = "text", required = false) String text,
+                                         @RequestParam(name = "categories", required = false) List<Long> categories,
+                                         @RequestParam(name = "paid", required = false) Boolean paid,
+                                         @RequestParam(name = "rangeStart", required = false, defaultValue = "1111-01-01 00:00:01") String rangeStart,
+                                         @RequestParam(name = "rangeEnd", required = false, defaultValue = "9999-01-01 00:00:01") String rangeEnd,
+                                         @RequestParam(name = "onlyAvailable", required = false) Boolean onlyAvailable,
+                                         @RequestParam(name = "sort", required = false, defaultValue = "EVENT_DATE") EventSort sort,
+                                         @RequestParam(name = "from", required = false, defaultValue = "0") int from,
+                                         @RequestParam(name = "size", required = false, defaultValue = "10") int size) {
         return publicEventsService.getEvents(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size);
     }
 

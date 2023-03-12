@@ -1,6 +1,6 @@
 package com.lionword.mainservice.entity.util;
 
-import com.lionword.mainservice.apierror.exceptions.ExceptionTemplates;
+import com.lionword.mainservice.apierror.ExceptionTemplates;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;

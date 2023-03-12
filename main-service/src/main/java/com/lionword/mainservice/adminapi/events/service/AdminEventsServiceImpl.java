@@ -3,7 +3,7 @@ package com.lionword.mainservice.adminapi.events.service;
 import com.lionword.mainservice.adminapi.categories.repository.AdminCategoriesRepository;
 import com.lionword.mainservice.adminapi.events.repository.AdminEventsRepository;
 import com.lionword.mainservice.adminapi.events.repository.AdminLocationRepository;
-import com.lionword.mainservice.apierror.exceptions.ExceptionTemplates;
+import com.lionword.mainservice.apierror.ExceptionTemplates;
 import com.lionword.mainservice.entity.category.CategoryDto;
 import com.lionword.mainservice.entity.event.EventFullDto;
 import com.lionword.mainservice.entity.event.EventState;
@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -36,6 +37,7 @@ public class AdminEventsServiceImpl implements AdminEventsService {
                                         String rangeEnd,
                                         int from,
                                         int size) {
+
         InputValidator.checkDateInput(rangeStart, rangeEnd);
         LocalDateTime start = LocalDateTime.parse(rangeStart, TimeFormatter.DEFAULT);
         LocalDateTime end = LocalDateTime.parse(rangeEnd, TimeFormatter.DEFAULT);

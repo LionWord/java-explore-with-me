@@ -1,6 +1,6 @@
 package com.lionword.mainservice.privateapi.participationrequests.service;
 
-import com.lionword.mainservice.apierror.exceptions.ExceptionTemplates;
+import com.lionword.mainservice.apierror.ExceptionTemplates;
 import com.lionword.mainservice.entity.event.EventFullDto;
 import com.lionword.mainservice.entity.event.EventState;
 import com.lionword.mainservice.entity.participation.ParticipationRequestDto;

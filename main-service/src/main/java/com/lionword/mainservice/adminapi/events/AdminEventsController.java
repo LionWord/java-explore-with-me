@@ -18,13 +18,13 @@ public class AdminEventsController {
     private final AdminEventsService adminEventsService;
 
     @GetMapping
-    public List<EventFullDto> getEvents(@RequestParam(name = "users") List<Long> users,
-                                        @RequestParam(name = "states") List<EventState> states,
-                                        @RequestParam(name = "categories") List<Long> categories,
-                                        @RequestParam(name = "rangeStart") String rangeStart,
-                                        @RequestParam(name = "rangeEnd") String rangeEnd,
-                                        @RequestParam(name = "from") int from,
-                                        @RequestParam(name = "size") int size) {
+    public List<EventFullDto> getEvents(@RequestParam(name = "users", required = false) List<Long> users,
+                                        @RequestParam(name = "states", required = false) List<EventState> states,
+                                        @RequestParam(name = "categories", required = false) List<Long> categories,
+                                        @RequestParam(name = "rangeStart", required = false, defaultValue = "1111-01-01 00:00:01") String rangeStart,
+                                        @RequestParam(name = "rangeEnd", required = false, defaultValue = "9999-01-01 00:00:01") String rangeEnd,
+                                        @RequestParam(name = "from", defaultValue = "0") int from,
+                                        @RequestParam(name = "size", defaultValue = "10") int size) {
         return adminEventsService.getEvents(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
