@@ -1,6 +1,5 @@
 package com.lionword.mainservice.adminapi.events;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lionword.mainservice.adminapi.events.service.AdminEventsService;
 import com.lionword.mainservice.entity.event.EventFullDto;
 import com.lionword.mainservice.entity.event.EventState;

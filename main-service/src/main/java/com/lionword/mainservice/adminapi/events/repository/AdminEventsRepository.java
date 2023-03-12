@@ -1,6 +1,5 @@
 package com.lionword.mainservice.adminapi.events.repository;
 
-import com.lionword.mainservice.entity.category.CategoryDto;
 import com.lionword.mainservice.entity.event.EventFullDto;
 import com.lionword.mainservice.entity.event.EventState;
 import org.springframework.data.domain.Page;

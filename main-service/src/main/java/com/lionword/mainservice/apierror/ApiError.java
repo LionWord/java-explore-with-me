@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 
 import javax.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
+
 @Getter
 @Setter
 public class ApiError {
@@ -15,7 +16,8 @@ public class ApiError {
     private String reason;
     private String message;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH-mm-ss")
-    private  LocalDateTime timestamp;
+    private LocalDateTime timestamp;
+
     public ApiError(ParentApiException exception) {
         this.status = exception.getStatus();
         this.reason = exception.getReason();

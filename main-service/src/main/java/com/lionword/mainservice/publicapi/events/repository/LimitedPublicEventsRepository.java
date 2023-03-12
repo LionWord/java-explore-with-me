@@ -6,22 +6,22 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.Repository;
 
-import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+
 @NoRepositoryBean
 public interface LimitedPublicEventsRepository<EventFullDto, Long> extends Repository<EventFullDto, Long> {
 
     Optional<EventFullDto> findById(long eventId);
 
     @Modifying
-    @Query ("UPDATE EventFullDto e SET e.views = e.views + 1" +
+    @Query("UPDATE EventFullDto e SET e.views = e.views + 1" +
             "WHERE e.id = :eventId")
     void addView(long eventId);
 
     @Modifying
-    @Query ("UPDATE EventFullDto e SET e.views = e.views + 1" +
+    @Query("UPDATE EventFullDto e SET e.views = e.views + 1" +
             "WHERE e.id IN :eventIds")
     void addViewToMultipleEvents(List<Long> eventIds);
 
@@ -58,12 +58,12 @@ public interface LimitedPublicEventsRepository<EventFullDto, Long> extends Repos
             "AND e.paid = :paid " +
             "ORDER BY e.views DESC ")
     List<EventFullDto> searchEventByCriteriaSortByViews(String text,
-                                                       List<Long> categories,
-                                                       Boolean paid,
-                                                       LocalDateTime rangeStart,
-                                                       LocalDateTime rangeEnd,
-                                                       Boolean onlyAvailable,
-                                                       Pageable pageable);
+                                                        List<Long> categories,
+                                                        Boolean paid,
+                                                        LocalDateTime rangeStart,
+                                                        LocalDateTime rangeEnd,
+                                                        Boolean onlyAvailable,
+                                                        Pageable pageable);
 
 }
 

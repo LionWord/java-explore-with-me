@@ -3,7 +3,6 @@ package com.lionword.mainservice.entity.event;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lionword.mainservice.entity.category.CategoryDto;
 import com.lionword.mainservice.entity.user.UserDto;
-import com.lionword.mainservice.entity.user.UserShortDto;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

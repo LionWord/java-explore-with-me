@@ -1,5 +1,6 @@
 package com.lionword.mainservice.publicapi.compilations.service;
 
+import com.lionword.mainservice.apierror.ExceptionTemplates;
 import com.lionword.mainservice.entity.compilation.CompilationDto;
 import com.lionword.mainservice.entity.util.CompilationsMapper;
 import com.lionword.mainservice.publicapi.compilations.repository.PublicCompilationsRepository;
@@ -31,6 +32,7 @@ public class PublicCompilationsServiceImpl implements PublicCompilationsService 
     }
 
     public CompilationDto getCompilationById(long compId) {
-        return CompilationsMapper.mapToDto(compilationsRepository.findById(compId).orElseThrow());
+        return CompilationsMapper.mapToDto(compilationsRepository.findById(compId)
+                .orElseThrow(ExceptionTemplates::compilationNotFound));
     }
 }

@@ -3,7 +3,6 @@ package com.lionword.mainservice.adminapi.events.service;
 import com.lionword.mainservice.entity.event.EventFullDto;
 import com.lionword.mainservice.entity.event.EventState;
 import com.lionword.mainservice.entity.event.UpdateEventAdminRequest;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

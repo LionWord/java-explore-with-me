@@ -1,7 +1,6 @@
 package com.lionword.mainservice.entity.location;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.lionword.mainservice.entity.event.EventFullDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
