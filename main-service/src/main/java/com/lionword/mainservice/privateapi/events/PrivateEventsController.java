@@ -21,8 +21,8 @@ public class PrivateEventsController {
     private final PrivateEventsService privateEventsService;
 
     @GetMapping
-    public List<EventShortDto> getEvents(@RequestParam(name = "from", required = false) int from,
-                                         @RequestParam(name = "size", required = false) int size,
+    public List<EventShortDto> getEvents(@RequestParam(name = "from", required = false, defaultValue = "0") int from,
+                                         @RequestParam(name = "size", required = false, defaultValue = "10") int size,
                                          @PathVariable long userId) {
         return privateEventsService.getEvents(from, size, userId);
     }

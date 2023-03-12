@@ -1,6 +1,7 @@
-package com.lionword.mainservice.apierror.exceptions;
+package com.lionword.mainservice.apierror;
 
 import com.lionword.mainservice.apierror.NotInitiatorException;
+import com.lionword.mainservice.apierror.exceptions.*;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public class ExceptionTemplates {
     public static void dateParse() {
         throw new InvalidInputException(HttpStatus.BAD_REQUEST,
                 "Invalid time format",
-                "Could not parse time string. Check your input. Correct format is \"yyyy-MM-dd HH:mm:ss\"");
+                "Could not parse time string. Check your input. Correct format is yyyy-MM-dd HH:mm:ss");
     }
 
     public static void eventTooEarlyAfterPublication() {

@@ -2,15 +2,11 @@ package com.lionword.mainservice.adminapi.categories.service;
 
 import com.lionword.mainservice.adminapi.categories.repository.AdminCategoriesRepository;
 import com.lionword.mainservice.adminapi.events.repository.AdminEventsRepository;
-import com.lionword.mainservice.apierror.exceptions.ExceptionTemplates;
-import com.lionword.mainservice.apierror.exceptions.HaveLinkedEventsException;
-import com.lionword.mainservice.apierror.exceptions.NoSuchEntryException;
-import com.lionword.mainservice.apierror.exceptions.NotUniqueCategoryNameException;
+import com.lionword.mainservice.apierror.ExceptionTemplates;
 import com.lionword.mainservice.entity.category.CategoryDto;
 import com.lionword.mainservice.entity.category.NewCategoryDto;
 import com.lionword.mainservice.entity.event.EventFullDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

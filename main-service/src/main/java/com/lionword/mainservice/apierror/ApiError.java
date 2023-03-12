@@ -2,7 +2,6 @@ package com.lionword.mainservice.apierror;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lionword.mainservice.apierror.exceptions.ParentApiException;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
