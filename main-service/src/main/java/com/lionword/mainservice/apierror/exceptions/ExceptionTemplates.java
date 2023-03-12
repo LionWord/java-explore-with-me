@@ -1,5 +1,6 @@
 package com.lionword.mainservice.apierror.exceptions;
 
+import com.lionword.mainservice.apierror.NotInitiatorException;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -128,6 +129,12 @@ public class ExceptionTemplates {
         throw new NotPendingRequestStatusChangingException(HttpStatus.CONFLICT,
                 "Request is not pending",
                 "Can't confirm or reject non pending request");
+    }
+
+    public static void notInitiatorRequest() {
+        throw new NotInitiatorException(HttpStatus.CONFLICT,
+                "Can't execute request",
+                "Only initiator of event can get information about participation requests");
     }
 
 }

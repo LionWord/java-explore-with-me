@@ -23,7 +23,8 @@ public class ErrorHandler {
             NotPublishedEventException.class,
             ParticipationLimitReachedException.class,
             AlteringAlreadyPublishedEventException.class,
-            NotPendingRequestStatusChangingException.class})
+            NotPendingRequestStatusChangingException.class,
+            NotInitiatorException.class})
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError handle409ErrorCode(ParentApiException pae) {
         return new ApiError(pae);
