@@ -119,32 +119,36 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
         ArrayList<Long> confirmedRequestsIds = new ArrayList<>();
         ArrayList<Long> rejectedRequestsIds = new ArrayList<>();
 
-        if (event.getParticipantLimit() == 0 & !event.isRequestModeration()) {
-            result.setConfirmedRequests(requests);
-            event.setConfirmedRequests(event.getConfirmedRequests() + result.getConfirmedRequests().size());
-            participationRepo.changeParticipationRequestsStatus(requestIds, updateRequestStatus.getStatus());
-            eventRepo.save(event);
-            return result;
-        }
-
         boolean haveNonPendingRequests = requests.stream()
                 .anyMatch(participationRequestDto -> participationRequestDto.getStatus().equals(RequestState.CONFIRMED)
                         || participationRequestDto.getStatus().equals(RequestState.REJECTED));
 
-        if (haveNonPendingRequests) {
+        /*if (haveNonPendingRequests) {
             ExceptionTemplates.changingNonPendingRequestStatus();
-        }
+        }*/
 
-        if (event.getParticipantLimit() == 0 & event.isRequestModeration()) {
-            if (updateRequestStatus.getStatus().equals(RequestState.CONFIRMED)) {
+        if (event.getParticipantLimit() == 0) {
+            if (event.isRequestModeration()) {
+                if (haveNonPendingRequests) {
+                    ExceptionTemplates.changingNonPendingRequestStatus();
+                }
+                if (updateRequestStatus.getStatus().equals(RequestState.CONFIRMED)) {
+                    result.setConfirmedRequests(requests);
+                    event.setConfirmedRequests(event.getConfirmedRequests() + result.getConfirmedRequests().size());
+                    eventRepo.save(event);
+                } else {
+                    result.setRejectedRequests(requests);
+                }
+
+                return result;
+            } else {
                 result.setConfirmedRequests(requests);
                 event.setConfirmedRequests(event.getConfirmedRequests() + result.getConfirmedRequests().size());
+                participationRepo.changeParticipationRequestsStatus(requestIds, updateRequestStatus.getStatus());
                 eventRepo.save(event);
-            } else {
-                result.setRejectedRequests(requests);
+                return result;
             }
 
-            return result;
         }
 
         availableSlots = event.getParticipantLimit() - event.getConfirmedRequests();
@@ -153,20 +157,22 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
             ExceptionTemplates.participationLimitExceeded();
         }
 
-        if (event.getParticipantLimit() != 0 & !event.isRequestModeration()) {
-            result.setConfirmedRequests(requests.stream()
-                    .limit(availableSlots)
-                    .peek(participationRequestDto -> confirmedRequestsIds.add(participationRequestDto.getId()))
-                    .collect(Collectors.toCollection(ArrayList::new)));
-            result.setRejectedRequests(requests.stream()
-                    .skip(availableSlots)
-                    .peek(participationRequestDto -> rejectedRequestsIds.add(participationRequestDto.getId()))
-                    .collect(Collectors.toCollection(ArrayList::new)));
-            event.setConfirmedRequests(event.getConfirmedRequests() + result.getConfirmedRequests().size());
-            participationRepo.changeParticipationRequestsStatus(confirmedRequestsIds, RequestState.CONFIRMED);
-            participationRepo.changeParticipationRequestsStatus(rejectedRequestsIds, RequestState.REJECTED);
-            eventRepo.save(event);
-            return result;
+        if (event.getParticipantLimit() != 0) {
+            if (!event.isRequestModeration()) {
+                result.setConfirmedRequests(requests.stream()
+                        .limit(availableSlots)
+                        .peek(participationRequestDto -> confirmedRequestsIds.add(participationRequestDto.getId()))
+                        .collect(Collectors.toCollection(ArrayList::new)));
+                result.setRejectedRequests(requests.stream()
+                        .skip(availableSlots)
+                        .peek(participationRequestDto -> rejectedRequestsIds.add(participationRequestDto.getId()))
+                        .collect(Collectors.toCollection(ArrayList::new)));
+                event.setConfirmedRequests(event.getConfirmedRequests() + result.getConfirmedRequests().size());
+                participationRepo.changeParticipationRequestsStatus(confirmedRequestsIds, RequestState.CONFIRMED);
+                participationRepo.changeParticipationRequestsStatus(rejectedRequestsIds, RequestState.REJECTED);
+                eventRepo.save(event);
+                return result;
+            }
         }
 
         for (int i = 0; i <= availableSlots; i++) {
