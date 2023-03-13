@@ -123,10 +123,6 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
                 .anyMatch(participationRequestDto -> participationRequestDto.getStatus().equals(RequestState.CONFIRMED)
                         || participationRequestDto.getStatus().equals(RequestState.REJECTED));
 
-        /*if (haveNonPendingRequests) {
-            ExceptionTemplates.changingNonPendingRequestStatus();
-        }*/
-
         if (event.getParticipantLimit() == 0) {
             if (event.isRequestModeration()) {
                 if (haveNonPendingRequests) {
@@ -176,11 +172,13 @@ public class PrivateEventsServiceImpl implements PrivateEventsService {
         }
 
         for (int i = 0; i <= availableSlots; i++) {
-            if (i == availableSlots & i < requests.size()) {
-                requests = new ArrayList<>(requests.subList(i, requests.size()));
-                for (ParticipationRequestDto prd : requests) {
-                    prd.setStatus(RequestState.REJECTED);
-                    result.getRejectedRequests().add(prd);
+            if (i == availableSlots) {
+                if (i < requests.size()) {
+                    requests = new ArrayList<>(requests.subList(i, requests.size()));
+                    for (ParticipationRequestDto prd : requests) {
+                        prd.setStatus(RequestState.REJECTED);
+                        result.getRejectedRequests().add(prd);
+                    }
                 }
             }
             if (i == requests.size()) {
