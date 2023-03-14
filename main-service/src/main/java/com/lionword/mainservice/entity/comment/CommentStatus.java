@@ -4,5 +4,7 @@ public enum CommentStatus {
     WAITING_REVIEW,
     PUBLISHED,
     REJECTED,
-    REVIEW_AMENDED
+    AMENDING_WAITING_REVIEW,
+    AMENDED
+
 }

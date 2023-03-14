@@ -2,6 +2,9 @@ package com.lionword.mainservice.entity.comment;
 
 import com.lionword.mainservice.entity.user.UserDto;
 import com.lionword.mainservice.entity.user.UserShortDto;
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -10,6 +13,9 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "comments")
+@Getter
+@Setter
+@RequiredArgsConstructor
 public class Comment {
     @Id
     @Column(name = "id")
@@ -18,7 +24,7 @@ public class Comment {
     public Long eventId;
     @ManyToOne
     @JoinColumn(name = "author")
-    public UserShortDto author;
+    public UserDto author;
     @NotBlank
     @Length(min = 3, max = 512)
     @Column(name = "text")
@@ -28,5 +34,4 @@ public class Comment {
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     public CommentStatus status = CommentStatus.WAITING_REVIEW;
-
 }

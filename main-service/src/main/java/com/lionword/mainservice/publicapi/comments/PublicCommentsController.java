@@ -1,10 +1,13 @@
 package com.lionword.mainservice.publicapi.comments;
 
 import com.lionword.mainservice.entity.comment.Comment;
+import com.lionword.mainservice.entity.comment.CommentDto;
 import com.lionword.mainservice.publicapi.comments.repository.PublicCommentsRepository;
+import com.lionword.mainservice.publicapi.comments.service.PublicCommentsService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -13,14 +16,17 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PublicCommentsController {
 
-    //Unauthorized user can only watch comments
-    private final PublicCommentsRepository commentsRepo;
-
+    private final PublicCommentsService commentsService;
+    /**
+     * Public endpoint, allowing to watch comments by event id.
+     * Displays only comments, approved by moderator (PUBLISHED or AMENDED).
+     * If there are no comments yet, returns an empty list.
+     * NOTICE: This is the only one comments-related endpoint, available to unauthorized users - they can't leave comments.
+     */
     @GetMapping("/{eventId}")
-    public List<Comment> getEventComments(@PathVariable Long eventId,
-                                          @RequestParam(required = false, defaultValue = "0") int from,
-                                          @RequestParam(required = false, defaultValue = "10") int size) {
-        //Return only published comments
-
+    public List<CommentDto> getEventComments(@PathVariable Long eventId,
+                                             @RequestParam(required = false, defaultValue = "0") int from,
+                                             @RequestParam(required = false, defaultValue = "10") int size) {
+        return commentsService.getComments(eventId, from, size);
     }
 }
