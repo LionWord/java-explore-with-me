@@ -11,6 +11,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,12 +25,7 @@ public class AdminCommentsServiceImpl {
     public List<Comment> moderateComments(List<Long> commentsIds, String action) {
 
         //Check if admin action is correct
-        CommentAdminAction adminAction = null;
-        try {
-            adminAction = CommentAdminAction.valueOf(action);
-        } catch (IllegalArgumentException e) {
-            ExceptionTemplates.invalidAdminAction();
-        }
+        CommentAdminAction adminAction = stringToAction(action);
 
         //Check if admin is trying to pass non-existent comments
         List<Comment> comments = commentsRepo.findAllById(commentsIds);
@@ -39,35 +35,13 @@ public class AdminCommentsServiceImpl {
         }
 
         //Check if any listed comment is already published
-        List<Comment> wrongComments = comments.stream()
-                .filter(comment -> comment.getStatus().equals(CommentStatus.PUBLISHED)
-                | comment.getStatus().equals(CommentStatus.AMENDED_PUBLISHED))
-                .collect(Collectors.toList());
+        checkCommentListValidity(comments);
 
-        if (wrongComments.size() > 0) {
-            ExceptionTemplates.commentAlreadyPublished();
-        }
         //Split comments to new and amended for different handling
-        List<Long> newComments = comments.stream()
-                .filter(comment -> comment.getStatus().equals(CommentStatus.WAITING_REVIEW))
-                .map(Comment::getId)
-                .collect(Collectors.toList());
-        List<Long> amendedComments = comments.stream()
-                .filter(comment -> comment.getStatus().equals(CommentStatus.AMENDING_WAITING_REVIEW))
-                .map(Comment::getId)
-                .collect(Collectors.toList());
+        List<List<Long>> newAndAmended = splitCommentsToNewAndAmended(comments);
 
-        switch (adminAction) {
-            case APPROVE:
-                commentsRepo.publishNewComments(newComments);
-                commentsRepo.setPublicationDate(newComments, LocalDateTime.now());
-                commentsRepo.approveAmending(amendedComments);
-                break;
-            case REJECT:
-                commentsRepo.deleteNewCommentsById(commentsIds);
-                //maybe i need some rollback logic here
-                break;
-        }
+        //apply admin action to given comments
+        doAdminAction(newAndAmended.get(0), newAndAmended.get(1), adminAction);
         return commentsRepo.findAllById(commentsIds);
 
     }
@@ -91,8 +65,62 @@ public class AdminCommentsServiceImpl {
 
     }
 
+    //____________________Service methods_________________
+
+
     private void checkIfEventIsPresent(Long eventId) {
         eventsRepo.findById(eventId).orElseThrow(ExceptionTemplates::eventNotFound);
     }
+
+    private CommentAdminAction stringToAction(String action) {
+        CommentAdminAction adminAction = null;
+        try {
+            adminAction = CommentAdminAction.valueOf(action);
+        } catch (IllegalArgumentException e) {
+            ExceptionTemplates.invalidAdminAction();
+        }
+        return adminAction;
+    }
+
+    private void checkCommentListValidity(List<Comment> comments) {
+        List<Comment> wrongComments = comments.stream()
+                .filter(comment -> comment.getStatus().equals(CommentStatus.PUBLISHED)
+                        | comment.getStatus().equals(CommentStatus.AMENDED_PUBLISHED))
+                .collect(Collectors.toList());
+
+        if (wrongComments.size() > 0) {
+            ExceptionTemplates.commentAlreadyPublished();
+        }
+    }
+
+    private void doAdminAction(List<Long> newComments, List<Long> amendedComments, CommentAdminAction adminAction) {
+        switch (adminAction) {
+            case APPROVE:
+                commentsRepo.publishNewComments(newComments);
+                commentsRepo.setPublicationDate(newComments, LocalDateTime.now());
+                commentsRepo.approveAmending(amendedComments);
+                break;
+            case REJECT:
+                commentsRepo.deleteAllById(newComments);
+                //maybe i need some rollback logic here
+                break;
+        }
+    }
+
+    private List<List<Long>> splitCommentsToNewAndAmended(List<Comment> comments) {
+        List<List<Long>> splitComments = new ArrayList<>();
+        List<Long> newComments = comments.stream()
+                .filter(comment -> comment.getStatus().equals(CommentStatus.WAITING_REVIEW))
+                .map(Comment::getId)
+                .collect(Collectors.toList());
+        List<Long> amendedComments = comments.stream()
+                .filter(comment -> comment.getStatus().equals(CommentStatus.AMENDING_WAITING_REVIEW))
+                .map(Comment::getId)
+                .collect(Collectors.toList());
+        splitComments.add(newComments);
+        splitComments.add(amendedComments);
+        return splitComments;
+    }
+
 
 }

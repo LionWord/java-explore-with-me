@@ -44,10 +44,5 @@ public interface AdminCommentsRepository extends JpaRepository<Comment, Long> {
             "WHERE c.id IN :commentsIds")
     void setPublicationDate(List<Long> commentsIds, LocalDateTime publicationDate);
 
-    @Query("DELETE FROM Comment c " +
-            "WHERE c.id IN :commentsIds " +
-            "AND c.status = '0'")
-    void deleteNewCommentsById(List<Long> commentsIds);
-
 }
 
