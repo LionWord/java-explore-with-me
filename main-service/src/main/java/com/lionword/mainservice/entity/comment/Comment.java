@@ -30,7 +30,7 @@ public class Comment {
     @Column(name = "text")
     public String text;
     @Column(name = "publication_date")
-    public LocalDateTime publicationDate = LocalDateTime.now();
+    public LocalDateTime publicationDate;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     public CommentStatus status = CommentStatus.WAITING_REVIEW;

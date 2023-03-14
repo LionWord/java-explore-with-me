@@ -153,6 +153,12 @@ public class ExceptionTemplates {
                 "Only initiator of event can get information about participation requests");
     }
 
+    public static void invalidAdminAction() {
+        throw new InvalidInputException(HttpStatus.BAD_REQUEST,
+                "Unknown action",
+                "There is no such admin action related to comments");
+    }
+
 }
 
 
