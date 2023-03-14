@@ -69,6 +69,14 @@ public class ExceptionTemplates {
         );
     }
 
+    public static NoSuchEntryException commentNotFound() {
+        throw new NoSuchEntryException(
+                HttpStatus.NOT_FOUND,
+                "Comment not found",
+                "Comment entry was not found"
+        );
+    }
+
     public static NoSuchEntryException userNotFound() {
         throw new NoSuchEntryException(
                 HttpStatus.NOT_FOUND,
@@ -158,6 +166,13 @@ public class ExceptionTemplates {
                 "Unknown action",
                 "There is no such admin action related to comments");
     }
+
+    public static void commentAlreadyPublished() {
+        throw new AlreadyPublishedException(HttpStatus.CONFLICT,
+                "Comment is already published",
+                "Can't publish an comment that was already published");
+    }
+
 
 }
 

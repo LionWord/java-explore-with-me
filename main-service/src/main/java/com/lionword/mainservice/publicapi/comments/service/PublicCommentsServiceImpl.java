@@ -26,7 +26,7 @@ public class PublicCommentsServiceImpl implements PublicCommentsService {
         return commentsRepo.findAllByEventId(eventId, PageRequest.of(from, size))
                 .getContent().stream()
                 .filter(comment -> comment.getStatus().equals(CommentStatus.PUBLISHED)
-                        | comment.getStatus().equals(CommentStatus.AMENDED))
+                        | comment.getStatus().equals(CommentStatus.AMENDED_PUBLISHED))
                 .map(CommentsMapper::mapToDto)
                 .collect(Collectors.toList());
     }
