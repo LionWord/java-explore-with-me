@@ -25,8 +25,7 @@ public class PublicCommentsServiceImpl implements PublicCommentsService {
         eventsRepo.findById(eventId).orElseThrow(ExceptionTemplates::eventNotFound);
         return commentsRepo.findAllByEventId(eventId, PageRequest.of(from, size))
                 .getContent().stream()
-                .filter(comment -> comment.getStatus().equals(CommentStatus.PUBLISHED)
-                        | comment.getStatus().equals(CommentStatus.AMENDED_PUBLISHED))
+                .filter(comment -> comment.getStatus().equals(CommentStatus.PUBLISHED))
                 .map(CommentsMapper::mapToDto)
                 .collect(Collectors.toList());
     }

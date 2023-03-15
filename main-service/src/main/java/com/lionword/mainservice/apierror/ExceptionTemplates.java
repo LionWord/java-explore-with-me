@@ -173,6 +173,12 @@ public class ExceptionTemplates {
                 "Can't publish an comment that was already published");
     }
 
+    public static void notCommentAuthor() {
+        throw new NotAuthorException(HttpStatus.CONFLICT,
+                "Can't execute request",
+                "Only comment's author can amend it");
+    }
+
 
 }
 

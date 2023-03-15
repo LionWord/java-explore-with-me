@@ -19,7 +19,7 @@ public class PublicCommentsController {
     private final PublicCommentsService commentsService;
     /**
      * Public endpoint, allowing to watch comments by event id.
-     * Displays only comments, approved by moderator (PUBLISHED or AMENDED).
+     * Displays only comments, approved by moderator (PUBLISHED).
      * If there are no comments yet, returns an empty list.
      * NOTICE: This is the only one comments-related endpoint, available to unauthorized users - they can't leave comments.
      */
