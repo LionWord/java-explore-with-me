@@ -19,19 +19,23 @@ import java.time.LocalDateTime;
 public class Comment {
     @Id
     @Column(name = "id")
-    public Long id;
+    private Long id;
     @Column(name = "event_id")
-    public Long eventId;
+    private Long eventId;
     @ManyToOne
     @JoinColumn(name = "author")
-    public UserDto author;
+    private UserDto author;
     @NotBlank
     @Length(min = 3, max = 512)
     @Column(name = "text")
-    public String text;
+    private String text;
     @Column(name = "publication_date")
-    public LocalDateTime publicationDate;
+    private LocalDateTime publicationDate;
+    @Column(name = "amended")
+    private boolean amended = false;
+    @Column(name = "amendment_date")
+    private LocalDateTime amendmentDate;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    public CommentStatus status = CommentStatus.WAITING_REVIEW;
+    private CommentStatus status = CommentStatus.WAITING_REVIEW;
 }

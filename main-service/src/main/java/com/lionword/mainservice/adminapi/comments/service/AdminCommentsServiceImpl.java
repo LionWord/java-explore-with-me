@@ -1,38 +1,44 @@
 package com.lionword.mainservice.adminapi.comments.service;
 
+import com.lionword.mainservice.adminapi.comments.repository.AdminAmendCommentRequestsRepository;
 import com.lionword.mainservice.adminapi.comments.repository.AdminCommentsRepository;
 import com.lionword.mainservice.adminapi.events.repository.AdminEventsRepository;
 import com.lionword.mainservice.apierror.ExceptionTemplates;
 import com.lionword.mainservice.entity.comment.Comment;
 import com.lionword.mainservice.entity.comment.CommentAdminAction;
+import com.lionword.mainservice.entity.comment.CommentAmendRequest;
 import com.lionword.mainservice.entity.comment.CommentStatus;
+import com.lionword.mainservice.entity.util.InputValidator;
+import com.lionword.mainservice.entity.util.TimeFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class AdminCommentsServiceImpl {
+public class AdminCommentsServiceImpl implements AdminCommentsService {
 
     private final AdminCommentsRepository commentsRepo;
     private final AdminEventsRepository eventsRepo;
+    private final AdminAmendCommentRequestsRepository amendRepo;
 
+    @Override
     public List<Comment> moderateComments(List<Long> commentsIds, String action) {
 
         //Check if admin action is correct
         CommentAdminAction adminAction = stringToAction(action);
 
         //Check if admin is trying to pass non-existent comments
-        List<Comment> comments = commentsRepo.findAllById(commentsIds);
-
-        if (comments.size() != commentsIds.size()) {
-            ExceptionTemplates.commentNotFound();
-        }
+        List<Comment> comments = returnListIfAllExist(commentsIds);
 
         //Check if any listed comment is already published
         checkCommentListValidity(comments);
@@ -45,7 +51,7 @@ public class AdminCommentsServiceImpl {
         return commentsRepo.findAllById(commentsIds);
 
     }
-
+    @Override
     public List<Comment> getCommentsWaitingReview(Long eventId, int from, int size) {
         if (eventId != null) {
             checkIfEventIsPresent(eventId);
@@ -54,15 +60,36 @@ public class AdminCommentsServiceImpl {
             return commentsRepo.getAllCommentsWaitingReview(PageRequest.of(from, size)).getContent();
         }
     }
+    @Override
+    public List<CommentAmendRequest> getAmendmentRequests(Long eventId, int from, int size) {
+        if (eventId != 0) {
+            return amendRepo.findAmendmentRequestsByEventId(eventId, PageRequest.of(from, size)).getContent();
+        } else {
+            return amendRepo.findAll(PageRequest.of(from, size)).getContent();
+        }
+    }
 
-    public List<Comment> getAllComments(Long eventId, int from, int size) {
+    @Override
+    public List<Comment> getAmendedComments(Long eventId, int from, int size) {
         if (eventId != null) {
             checkIfEventIsPresent(eventId);
-            return commentsRepo.findAllByEventId(eventId, PageRequest.of(from, size)).getContent();
-        } else {
-            return commentsRepo.findAll(Pa)
+            return commentsRepo.getCommentsWaitingReviewByEventId(eventId, PageRequest.of(from, size)).getContent();
+        }  else {
+            return commentsRepo.getAllCommentsWaitingReview(PageRequest.of(from, size)).getContent();
         }
-
+    }
+    @Override
+    public List<Comment> getAllComments(Long eventId, String publicationStart, String publicationEnd, int from, int size) {
+            InputValidator.checkDateInput(publicationStart, publicationEnd);
+            checkIfEventIsPresent(eventId);
+            LocalDateTime start = LocalDateTime.parse(publicationStart, TimeFormatter.DEFAULT);
+            LocalDateTime end = LocalDateTime.parse(publicationEnd, TimeFormatter.DEFAULT);
+            Pageable pageable = PageRequest.of(from, size);
+            return commentsRepo.findAllByCriteria(eventId, start, end, PageRequest.of(from, size)).getContent();
+    }
+    @Override
+    public void deleteComments(List<Long> commentsIds) {
+        commentsRepo.deleteAllById(commentsIds);
     }
 
     //____________________Service methods_________________
@@ -84,8 +111,7 @@ public class AdminCommentsServiceImpl {
 
     private void checkCommentListValidity(List<Comment> comments) {
         List<Comment> wrongComments = comments.stream()
-                .filter(comment -> comment.getStatus().equals(CommentStatus.PUBLISHED)
-                        | comment.getStatus().equals(CommentStatus.AMENDED_PUBLISHED))
+                .filter(comment -> comment.getStatus().equals(CommentStatus.PUBLISHED))
                 .collect(Collectors.toList());
 
         if (wrongComments.size() > 0) {
@@ -93,16 +119,31 @@ public class AdminCommentsServiceImpl {
         }
     }
 
+    private List<Comment> returnListIfAllExist (List<Long> commentsIds) {
+        List<Comment> comments = commentsRepo.findAllById(commentsIds);
+        if (comments.size() != commentsIds.size()) {
+            ExceptionTemplates.commentNotFound();
+        }
+        return comments;
+    }
+
     private void doAdminAction(List<Long> newComments, List<Long> amendedComments, CommentAdminAction adminAction) {
         switch (adminAction) {
             case APPROVE:
-                commentsRepo.publishNewComments(newComments);
-                commentsRepo.setPublicationDate(newComments, LocalDateTime.now());
-                commentsRepo.approveAmending(amendedComments);
+                if (newComments.size() > 0) {
+                    doApprovingSequence(newComments);
+                }
+                if (amendedComments.size() > 0) {
+                    doAmendingSequence(amendedComments);
+                }
                 break;
             case REJECT:
-                commentsRepo.deleteAllById(newComments);
-                //maybe i need some rollback logic here
+                if (newComments.size() > 0) {
+                    commentsRepo.deleteAllById(newComments);
+                }
+                if (amendedComments.size() > 0) {
+                    //maybe i need some rollback logic here
+                }
                 break;
         }
     }
@@ -114,7 +155,7 @@ public class AdminCommentsServiceImpl {
                 .map(Comment::getId)
                 .collect(Collectors.toList());
         List<Long> amendedComments = comments.stream()
-                .filter(comment -> comment.getStatus().equals(CommentStatus.AMENDING_WAITING_REVIEW))
+                .filter(Comment::isAmended)
                 .map(Comment::getId)
                 .collect(Collectors.toList());
         splitComments.add(newComments);
@@ -122,5 +163,25 @@ public class AdminCommentsServiceImpl {
         return splitComments;
     }
 
+    private void doAmendingSequence(List<Long> commentsIds) {
+        commentsRepo.setAmended(commentsIds);
+        amendTexts(commentsIds);
+        commentsRepo.setAmendmentDate(commentsIds, LocalDateTime.now());
+        amendRepo.deleteAmendmentRequest(commentsIds);
+    }
+
+    private void doApprovingSequence(List<Long> commentsIds) {
+        commentsRepo.approveForPublication(commentsIds);
+        commentsRepo.setPublicationDate(commentsIds, LocalDateTime.now());
+    }
+
+    private void amendTexts(List<Long> commentsIds) {
+        Map<Long, String> commentsAndNewTexts = new ConcurrentHashMap<>(commentsIds.size());
+        amendRepo.findAmendmentRequestsByCommentsIds(commentsIds).stream()
+                .peek(commentAmendRequest -> commentsAndNewTexts.put(commentAmendRequest.getComment().getId(), commentAmendRequest.getNewText()));
+        for (Long l : commentsAndNewTexts.keySet()) {
+            commentsRepo.amendText(l, commentsAndNewTexts.get(l));
+        }
+    }
 
 }

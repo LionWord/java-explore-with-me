@@ -14,28 +14,29 @@ import java.util.List;
 public interface AdminCommentsRepository extends JpaRepository<Comment, Long> {
     @Query("SELECT c FROM Comment c " +
             "WHERE c.eventId = :eventdId " +
-            "AND c.status = '0' or c.status = '2' " +
+            "AND c.status = '0' " +
             "ORDER BY c.id DESC ")
     Page<Comment> getCommentsWaitingReviewByEventId(Long eventId, Pageable pageable);
 
     @Query("SELECT c from Comment c " +
-            "WHERE c.status = '0' OR c.status = '2'")
+            "WHERE c.status = '0' ")
     Page<Comment> getAllCommentsWaitingReview(Pageable pageable);
-    Page<Comment> findAllByEventId(Long eventId, Pageable pageable);
+
+    @Query("SELECT c FROM Comment c " +
+            "JOIN FETCH UserDto ud ON c.author=ud " +
+            "WHERE " +
+            "c.eventId = :eventId " +
+            "AND c.publicationDate >= :publicationDateStart " +
+            "AND c.publicationDate <= :publicationDateEnd " +
+            "ORDER BY c.publicationDate DESC ")
+    Page<Comment> findAllByCriteria(Long eventId, LocalDateTime publicationDateStart, LocalDateTime publicationDateEnd, Pageable pageable);
 
     @Modifying
     @Transactional
     @Query("UPDATE Comment c " +
             "SET c.status = '1' " +
             "WHERE c.id IN :commentsIds")
-    void publishNewComments(List<Long> newCommentsIds);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE Comment c " +
-            "SET c.status = '3' " +
-            "WHERE c.id IN :commentsIds")
-    void approveAmending(List<Long> amendedCommentsIds);
+    void approveForPublication(List<Long> commentsIds);
 
     @Modifying
     @Transactional
@@ -43,6 +44,26 @@ public interface AdminCommentsRepository extends JpaRepository<Comment, Long> {
             "SET c.publicationDate = :publicationDate " +
             "WHERE c.id IN :commentsIds")
     void setPublicationDate(List<Long> commentsIds, LocalDateTime publicationDate);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Comment c " +
+            "SET c.amended = true " +
+            "WHERE c.id IN :commentsIds")
+    void setAmended(List<Long> commentsIds);
+
+    @Modifying
+    @Transactional
+    @Query("UPDATE Comment c " +
+            "SET c.amendmentDate = :amendmentDate " +
+            "WHERE c.id IN :commentsIds")
+    void setAmendmentDate (List<Long> commentsIds, LocalDateTime amendmentDate);
+    @Modifying
+    @Transactional
+    @Query("UPDATE Comment c " +
+            "SET c.text = :newText " +
+            "WHERE c.id = :commentId")
+    void amendText(Long commentId, String newText);
 
 }
 
