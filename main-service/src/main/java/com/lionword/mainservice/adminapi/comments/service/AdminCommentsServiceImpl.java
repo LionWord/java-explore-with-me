@@ -84,12 +84,12 @@ public class AdminCommentsServiceImpl implements AdminCommentsService {
             checkIfEventIsPresent(eventId);
             LocalDateTime start = LocalDateTime.parse(publicationStart, TimeFormatter.DEFAULT);
             LocalDateTime end = LocalDateTime.parse(publicationEnd, TimeFormatter.DEFAULT);
-            Pageable pageable = PageRequest.of(from, size);
             return commentsRepo.findAllByCriteria(eventId, start, end, PageRequest.of(from, size)).getContent();
     }
     @Override
     public void deleteComments(List<Long> commentsIds) {
         commentsRepo.deleteAllById(commentsIds);
+        amendRepo.deleteAmendmentRequest(commentsIds);
     }
 
     //____________________Service methods_________________

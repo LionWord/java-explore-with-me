@@ -19,6 +19,6 @@ public interface AdminAmendCommentRequestsRepository extends JpaRepository<Comme
     Page<CommentAmendRequest> findAmendmentRequestsByEventId(Long eventId, Pageable pageable);
 
     @Query ("SELECT car FROM CommentAmendRequest car " +
-            "WHERE car.comment.id IN :id ")
+            "WHERE car.comment.id IN :commentsIds ")
     List<CommentAmendRequest> findAmendmentRequestsByCommentsIds(List<Long> commentsIds);
 }

@@ -13,7 +13,7 @@ import java.util.List;
 
 public interface AdminCommentsRepository extends JpaRepository<Comment, Long> {
     @Query("SELECT c FROM Comment c " +
-            "WHERE c.eventId = :eventdId " +
+            "WHERE c.eventId = :eventId " +
             "AND c.status = '0' " +
             "ORDER BY c.id DESC ")
     Page<Comment> getCommentsWaitingReviewByEventId(Long eventId, Pageable pageable);
