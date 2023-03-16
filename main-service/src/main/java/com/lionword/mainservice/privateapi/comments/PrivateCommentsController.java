@@ -16,7 +16,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class PrivateCommentsController {
 
-    PrivateCommentsService commentsService;
+    private final PrivateCommentsService commentsService;
+
     @PostMapping("/{eventId}/send")
     public Comment sendComment(@PathVariable Long userId,
                                @PathVariable Long eventId,

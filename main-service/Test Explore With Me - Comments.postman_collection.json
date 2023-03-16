@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "2a668e59-5d48-430f-94b7-aa22a65b19c6",
+		"_postman_id": "2952bb21-fe64-447f-ac46-cc830fe076ea",
 		"name": "Test Explore With Me - Comments",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -13,7 +13,7 @@
 			"name": "Registered",
 			"item": [
 				{
-					"name": "New Request",
+					"name": "Get user's comment",
 					"event": [
 						{
 							"listen": "prerequest",
@@ -22,18 +22,26 @@
 									"const main = async () => {\r",
 									"    const api = new API(pm);\r",
 									"    const rnd = new RandomUtils();\r",
-									"\r",
+									"    let comment;\r",
+									"    let event;\r",
 									"    try {\r",
 									"        const user = await api.addUser(rnd.getUser());\r",
+									"        pm.collectionVariables.set(\"uid\", user.id);\r",
 									"        const category = await api.addCategory(rnd.getCategory());\r",
-									"        let event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
+									"        event = await api.addEvent(user.id, rnd.getEvent(category.id));\r",
 									"        event = await api.publishEvent(event.id);\r",
-									"        pm.request.removeQueryParams(['users', 'categories']);\r",
-									"        pm.request.addQueryParams([`users=` + user.id, 'categories=' + category.id]);\r",
-									"        pm.collectionVariables.set('response', event);\r",
+									"        pm.collectionVariables.set(\"eventId\", event.id);\r",
+									"        comment = await api.addComment(user.id, event.id, rnd.getComment());\r",
+									"        comment = await api.publishComment('APPROVE', comment.id);\r",
 									"    } catch(err) {\r",
 									"        console.error(\"Ошибка при подготовке тестовых данных.\", err);\r",
 									"    }\r",
+									"\r",
+									"    pm.request.body.update({\r",
+									"        mode: 'raw',\r",
+									"        raw: JSON.stringify(comment),\r",
+									"        options: { raw: { language: 'json' } }\r",
+									"    });\r",
 									"};\r",
 									"\r",
 									"const interval = setInterval(() => {}, 1000);\r",
@@ -60,14 +68,92 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrl}}/users/{{uid}}/comments",
+							"raw": "{{baseUrl}}/users/:userId/comments/all",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"users",
+								":userId",
+								"comments",
+								"all"
+							],
+							"variable": [
+								{
+									"key": "userId",
+									"value": "{{uid}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User post comment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"const main = async () => {",
+									"    const api = new API(pm);",
+									"    const rnd = new RandomUtils();",
+									"",
+									"    try {",
+									"        const user = await api.addUser(rnd.getUser());",
+									"        const category = await api.addCategory(rnd.getCategory());",
+									"        let event = await api.addEvent(user.id, rnd.getEvent(category.id));",
+									"        event = await api.publishEvent(event.id);",
+									"        pm.collectionVariables.set(\"uid\", user.id);",
+									"        pm.collectionVariables.set(\"eventId\", event.id);",
+									"    } catch(err) {",
+									"        console.error(\"Ошибка при подготовке тестовых данных.\", err);",
+									"    }",
+									"};",
+									"",
+									"const interval = setInterval(() => {}, 1000);",
+									"",
+									"setTimeout(async () => ",
+									"    {",
+									"        try {",
+									"            // выполняем наш скрипт",
+									"            await main();",
+									"        } catch (e) {",
+									"            console.error(e);",
+									"        } finally {",
+									"            clearInterval(interval);",
+									"        }",
+									"    },  ",
+									"    100 ",
+									");"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"text\": \"Ths is freaking awesome!\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrl}}/users/{{uid}}/comments/{{eventId}}/send",
 							"host": [
 								"{{baseUrl}}"
 							],
 							"path": [
 								"users",
 								"{{uid}}",
-								"comments"
+								"comments",
+								"{{eventId}}",
+								"send"
 							]
 						}
 					},
@@ -97,6 +183,10 @@
 					"        return this.post(\"/admin/users\", user, \"Ошибка при добавлении нового пользователя: \", verbose);",
 					"    }",
 					"",
+					"    async addComment(userId, eventId, comment, verbose=null) {",
+					"        return this.post(\"/users/\" + userId + /comments/ + eventId + \"/send\", comment, \"Ошибка при добавлении нового комментария: \", verbose);",
+					"    }",
+					"",
 					"    async addCategory(category, verbose=null) {",
 					"        return this.post(\"/admin/categories\", category, \"Ошибка при добавлении новой категории: \", verbose);",
 					"    }",
@@ -115,6 +205,10 @@
 					"",
 					"    async publishEvent(eventId, verbose=null) {",
 					"        return this.patch('/admin/events/' + eventId, {stateAction: \"PUBLISH_EVENT\"}, \"Ошибка при публикации события\", verbose);",
+					"    }",
+					"",
+					"    async publishComment(action, commentId, verbose=null) {",
+					"        return this.patch('/admin/comments/moderate?commentsIds=' + commentId + \"&action=\" + action, null, \"Ошибка при публикации комментария\", verbose);",
 					"    }",
 					"    ",
 					"    async rejectEvent(eventId, verbose=null) {",
@@ -224,6 +318,12 @@
 					"        }",
 					"    }",
 					"",
+					"    getComment() {",
+					"        return {",
+					"            text: pm.variables.replaceIn('{{$randomLoremSentence}}'),",
+					"        }",
+					"    }",
+					"",
 					"    getCompilation(...eventIds) {",
 					"        return {",
 					"            title: pm.variables.replaceIn('{{$randomLoremSentence}}'),",
@@ -326,6 +426,10 @@
 		},
 		{
 			"key": "catId",
+			"value": ""
+		},
+		{
+			"key": "eventId",
 			"value": ""
 		}
 	]

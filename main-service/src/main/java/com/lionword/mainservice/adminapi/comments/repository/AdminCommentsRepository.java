@@ -14,12 +14,12 @@ import java.util.List;
 public interface AdminCommentsRepository extends JpaRepository<Comment, Long> {
     @Query("SELECT c FROM Comment c " +
             "WHERE c.eventId = :eventId " +
-            "AND c.status = '0' " +
+            "AND c.status = 'WAITING_REVIEW' " +
             "ORDER BY c.id DESC ")
     Page<Comment> getCommentsWaitingReviewByEventId(Long eventId, Pageable pageable);
 
     @Query("SELECT c from Comment c " +
-            "WHERE c.status = '0' ")
+            "WHERE c.status = 'WAITING_REVIEW' ")
     Page<Comment> getAllCommentsWaitingReview(Pageable pageable);
 
     @Query("SELECT c FROM Comment c " +
@@ -34,7 +34,7 @@ public interface AdminCommentsRepository extends JpaRepository<Comment, Long> {
     @Modifying
     @Transactional
     @Query("UPDATE Comment c " +
-            "SET c.status = '1' " +
+            "SET c.status = 'PUBLISHED' " +
             "WHERE c.id IN :commentsIds")
     void approveForPublication(List<Long> commentsIds);
 

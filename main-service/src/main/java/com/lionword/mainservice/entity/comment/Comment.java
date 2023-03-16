@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @RequiredArgsConstructor
 public class Comment {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private Long id;
     @Column(name = "event_id")
