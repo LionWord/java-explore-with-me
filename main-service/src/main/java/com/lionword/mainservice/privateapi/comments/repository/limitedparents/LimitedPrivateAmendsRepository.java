@@ -21,7 +21,7 @@ public interface LimitedPrivateAmendsRepository <T, S> extends Repository<T, S> 
     @Query ("UPDATE CommentAmendRequest car " +
             "SET car.newText = :newText " +
             "WHERE car.comment.id = :commentId ")
-    T alterText(Long commentId, String newText);
+    void alterText(Long commentId, String newText);
 
     @Query ("DELETE FROM CommentAmendRequest car " +
             "WHERE car.comment.id = :commentId")

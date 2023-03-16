@@ -41,7 +41,8 @@ public class PrivateCommentsServiceImpl implements PrivateCommentsService {
         request.setNewText(amend.getAmendedText());
         request.setComment(comment);
         if (amendsRepo.findByCommentId(commentId).isPresent()) {
-            return amendsRepo.alterText(commentId, amend.getAmendedText());
+            amendsRepo.alterText(commentId, amend.getAmendedText());
+            return amendsRepo.findByCommentId(commentId).get();
         } else {
             return amendsRepo.save(request);
         }
