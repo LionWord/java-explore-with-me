@@ -173,8 +173,10 @@ public class AdminCommentsServiceImpl implements AdminCommentsService {
     }
 
     private void doApprovingSequence(List<Long> commentsIds) {
-        commentsRepo.approveForPublication(commentsIds);
-        commentsRepo.setPublicationDate(commentsIds, LocalDateTime.now());
+        commentsRepo.findAllById(commentsIds).stream()
+                        .peek(comment -> comment.setStatus(CommentStatus.PUBLISHED))
+                        .peek(comment -> comment.setPublicationDate(LocalDateTime.now()))
+                                .forEach(commentsRepo::save);
     }
 
     private void amendTexts(List<Long> commentsIds) {

@@ -35,20 +35,6 @@ public interface AdminCommentsRepository extends JpaRepository<Comment, Long> {
     @Modifying
     @Transactional
     @Query("UPDATE Comment c " +
-            "SET c.status = 'PUBLISHED' " +
-            "WHERE c.id IN :commentsIds")
-    void approveForPublication(List<Long> commentsIds);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE Comment c " +
-            "SET c.publicationDate = :publicationDate " +
-            "WHERE c.id IN :commentsIds")
-    void setPublicationDate(List<Long> commentsIds, LocalDateTime publicationDate);
-
-    @Modifying
-    @Transactional
-    @Query("UPDATE Comment c " +
             "SET c.amended = true " +
             "WHERE c.id IN :commentsIds")
     void setAmended(List<Long> commentsIds);
