@@ -9,8 +9,9 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 @NoRepositoryBean
-public interface LimitedPrivateAmendsRepository <T, S> extends Repository<T, S> {
+public interface LimitedPrivateAmendsRepository<T, S> extends Repository<T, S> {
     T save(T amendment);
+
     @Query("SELECT car FROM CommentAmendRequest car " +
             "JOIN FETCH Comment c ON car.comment = c " +
             "WHERE car.comment.id = :commentId ")
@@ -18,12 +19,12 @@ public interface LimitedPrivateAmendsRepository <T, S> extends Repository<T, S> 
 
     @Modifying
     @Transactional
-    @Query ("UPDATE CommentAmendRequest car " +
+    @Query("UPDATE CommentAmendRequest car " +
             "SET car.newText = :newText " +
             "WHERE car.comment.id = :commentId ")
     void alterText(Long commentId, String newText);
 
-    @Query ("DELETE FROM CommentAmendRequest car " +
+    @Query("DELETE FROM CommentAmendRequest car " +
             "WHERE car.comment.id = :commentId")
     void deleteAmendment(Long commentId);
 }

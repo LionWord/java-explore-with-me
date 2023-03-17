@@ -6,9 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -44,7 +43,8 @@ public interface AdminCommentsRepository extends JpaRepository<Comment, Long> {
     @Query("UPDATE Comment c " +
             "SET c.amendmentDate = :amendmentDate " +
             "WHERE c.id IN :commentsIds")
-    void setAmendmentDate (List<Long> commentsIds, LocalDateTime amendmentDate);
+    void setAmendmentDate(List<Long> commentsIds, LocalDateTime amendmentDate);
+
     @Modifying
     @Transactional
     @Query("UPDATE Comment c " +

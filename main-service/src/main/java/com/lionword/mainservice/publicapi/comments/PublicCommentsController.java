@@ -1,13 +1,9 @@
 package com.lionword.mainservice.publicapi.comments;
 
-import com.lionword.mainservice.entity.comment.Comment;
 import com.lionword.mainservice.entity.comment.CommentDto;
-import com.lionword.mainservice.publicapi.comments.repository.PublicCommentsRepository;
 import com.lionword.mainservice.publicapi.comments.service.PublicCommentsService;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.util.List;
 
@@ -17,6 +13,7 @@ import java.util.List;
 public class PublicCommentsController {
 
     private final PublicCommentsService commentsService;
+
     /**
      * Public endpoint, allowing to watch comments by event id.
      * Displays only comments, approved by moderator (PUBLISHED).

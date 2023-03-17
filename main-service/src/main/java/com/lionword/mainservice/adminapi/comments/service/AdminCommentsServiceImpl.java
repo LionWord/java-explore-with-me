@@ -12,13 +12,10 @@ import com.lionword.mainservice.entity.util.InputValidator;
 import com.lionword.mainservice.entity.util.TimeFormatter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,15 +50,17 @@ public class AdminCommentsServiceImpl implements AdminCommentsService {
         return commentsRepo.findAllById(commentsIds);
 
     }
+
     @Override
     public List<Comment> getCommentsWaitingReview(Long eventId, int from, int size) {
         if (eventId != null) {
             checkIfEventIsPresent(eventId);
             return commentsRepo.getCommentsWaitingReviewByEventId(eventId, PageRequest.of(from, size)).getContent();
-        }  else {
+        } else {
             return commentsRepo.getAllCommentsWaitingReview(PageRequest.of(from, size)).getContent();
         }
     }
+
     @Override
     public List<CommentAmendRequest> getAmendmentRequests(Long eventId, int from, int size) {
         if (eventId != 0) {
@@ -76,18 +75,20 @@ public class AdminCommentsServiceImpl implements AdminCommentsService {
         if (eventId != null) {
             checkIfEventIsPresent(eventId);
             return commentsRepo.getCommentsWaitingReviewByEventId(eventId, PageRequest.of(from, size)).getContent();
-        }  else {
+        } else {
             return commentsRepo.getAllCommentsWaitingReview(PageRequest.of(from, size)).getContent();
         }
     }
+
     @Override
     public List<Comment> getAllComments(Long eventId, String publicationStart, String publicationEnd, int from, int size) {
-            InputValidator.checkDateInput(publicationStart, publicationEnd);
-            checkIfEventIsPresent(eventId);
-            LocalDateTime start = LocalDateTime.parse(publicationStart, TimeFormatter.DEFAULT);
-            LocalDateTime end = LocalDateTime.parse(publicationEnd, TimeFormatter.DEFAULT);
-            return commentsRepo.findAllByCriteria(eventId, start, end, PageRequest.of(from, size)).getContent();
+        InputValidator.checkDateInput(publicationStart, publicationEnd);
+        checkIfEventIsPresent(eventId);
+        LocalDateTime start = LocalDateTime.parse(publicationStart, TimeFormatter.DEFAULT);
+        LocalDateTime end = LocalDateTime.parse(publicationEnd, TimeFormatter.DEFAULT);
+        return commentsRepo.findAllByCriteria(eventId, start, end, PageRequest.of(from, size)).getContent();
     }
+
     @Override
     public void deleteComments(List<Long> commentsIds) {
         commentsRepo.deleteAllById(commentsIds);
@@ -117,11 +118,17 @@ public class AdminCommentsServiceImpl implements AdminCommentsService {
                 .collect(Collectors.toList());
 
         if (wrongComments.size() > 0) {
-            ExceptionTemplates.commentAlreadyPublished();
+            List<Long> haveAmendmentRequests = wrongComments.stream()
+                    .map(Comment::getId)
+                    .peek(comment -> amendRepo.findAmendmentRequestsByCommentsIds(List.of(comment)))
+                    .collect(Collectors.toList());
+            if (wrongComments.size() != haveAmendmentRequests.size()) {
+                ExceptionTemplates.commentAlreadyPublished();
+            }
         }
     }
 
-    private List<Comment> returnListIfAllExist (List<Long> commentsIds) {
+    private List<Comment> returnListIfAllExist(List<Long> commentsIds) {
         List<Comment> comments = commentsRepo.findAllById(commentsIds);
         if (comments.size() != commentsIds.size()) {
             ExceptionTemplates.commentNotFound();
@@ -144,7 +151,7 @@ public class AdminCommentsServiceImpl implements AdminCommentsService {
                     commentsRepo.deleteAllById(newComments);
                 }
                 if (amendedComments.size() > 0) {
-                    //maybe i need some rollback logic here
+                    amendRepo.deleteAmendmentRequest(amendedComments);
                 }
                 break;
         }
@@ -157,7 +164,7 @@ public class AdminCommentsServiceImpl implements AdminCommentsService {
                 .map(Comment::getId)
                 .collect(Collectors.toList());
         List<Long> amendedComments = comments.stream()
-                .filter(Comment::isAmended)
+                .filter(comment -> amendRepo.findAmendmentRequestsByCommentsIds(List.of(comment.getId())).size() > 0)
                 .map(Comment::getId)
                 .collect(Collectors.toList());
         splitComments.add(newComments);
@@ -166,25 +173,29 @@ public class AdminCommentsServiceImpl implements AdminCommentsService {
     }
 
     private void doAmendingSequence(List<Long> commentsIds) {
-        commentsRepo.setAmended(commentsIds);
         amendTexts(commentsIds);
-        commentsRepo.setAmendmentDate(commentsIds, LocalDateTime.now());
         amendRepo.deleteAmendmentRequest(commentsIds);
     }
 
     private void doApprovingSequence(List<Long> commentsIds) {
         commentsRepo.findAllById(commentsIds).stream()
-                        .peek(comment -> comment.setStatus(CommentStatus.PUBLISHED))
-                        .peek(comment -> comment.setPublicationDate(LocalDateTime.now()))
-                                .forEach(commentsRepo::save);
+                .peek(comment -> comment.setStatus(CommentStatus.PUBLISHED))
+                .peek(comment -> comment.setPublicationDate(LocalDateTime.now()))
+                .forEach(commentsRepo::save);
     }
 
     private void amendTexts(List<Long> commentsIds) {
         Map<Long, String> commentsAndNewTexts = new ConcurrentHashMap<>(commentsIds.size());
         amendRepo.findAmendmentRequestsByCommentsIds(commentsIds).stream()
-                .peek(commentAmendRequest -> commentsAndNewTexts.put(commentAmendRequest.getComment().getId(), commentAmendRequest.getNewText()));
+                .peek(commentAmendRequest -> commentsAndNewTexts.put(commentAmendRequest.getComment().getId(), commentAmendRequest.getNewText()))
+                .collect(Collectors.toList());
+        Comment comment;
         for (Long l : commentsAndNewTexts.keySet()) {
-            commentsRepo.amendText(l, commentsAndNewTexts.get(l));
+            comment = commentsRepo.findById(l).orElseThrow(ExceptionTemplates::commentNotFound);
+            comment.setText(commentsAndNewTexts.get(l));
+            comment.setAmended(true);
+            comment.setAmendmentDate(LocalDateTime.now());
+            commentsRepo.save(comment);
         }
     }
 

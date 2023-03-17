@@ -24,6 +24,7 @@ public class PrivateCommentsController {
                                @RequestBody CommentShortDto comment) {
         return commentsService.sendComment(userId, eventId, comment);
     }
+
     @PatchMapping("/{commentId}/amend")
     public CommentAmendRequest amendComment(@PathVariable Long userId,
                                             @PathVariable Long commentId,

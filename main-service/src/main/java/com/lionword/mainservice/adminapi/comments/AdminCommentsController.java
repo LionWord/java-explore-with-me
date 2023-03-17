@@ -1,13 +1,12 @@
 package com.lionword.mainservice.adminapi.comments;
 
-import com.lionword.mainservice.entity.comment.Comment;
 import com.lionword.mainservice.adminapi.comments.service.AdminCommentsService;
+import com.lionword.mainservice.entity.comment.Comment;
 import com.lionword.mainservice.entity.comment.CommentAmendRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -16,6 +15,7 @@ import java.util.List;
 public class AdminCommentsController {
 
     private final AdminCommentsService commentsService;
+
     /**
      * Admin endpoint, allowing to approve or reject comments for publication.
      * Every comment listed must have status WAITING_REVIEW.
@@ -29,14 +29,14 @@ public class AdminCommentsController {
      * If admin tries to approve an already approved comment, throws AlreadyPublishedException.
      *
      * @param commentsIds List of comments id's as request parameter. Required.
-     * @param action Admin action. Can take APPROVE or REJECT value. Otherwise, method throws InvalidInputException. Required.
-     *
+     * @param action      Admin action. Can take APPROVE or REJECT value. Otherwise, method throws InvalidInputException. Required.
      */
     @PatchMapping(path = "/moderate")
     public List<Comment> moderateComments(@RequestParam List<Long> commentsIds,
-                                   @RequestParam String action) {
+                                          @RequestParam String action) {
         return commentsService.moderateComments(commentsIds, action);
     }
+
     @GetMapping(path = "/review")
     public List<Comment> getCommentsWaitingReview(@RequestParam(required = false) Long eventId,
                                                   @RequestParam(required = false, defaultValue = "0") int from,
@@ -46,8 +46,8 @@ public class AdminCommentsController {
 
     @GetMapping(path = "/amended")
     public List<Comment> getAmendedComments(@RequestParam(required = false) Long eventId,
-                                                  @RequestParam(required = false, defaultValue = "0") int from,
-                                                  @RequestParam(required = false, defaultValue = "10") int size) {
+                                            @RequestParam(required = false, defaultValue = "0") int from,
+                                            @RequestParam(required = false, defaultValue = "10") int size) {
         return commentsService.getAmendedComments(eventId, from, size);
     }
 
@@ -69,7 +69,7 @@ public class AdminCommentsController {
 
     @DeleteMapping(path = "/delete")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteComments (@RequestParam List<Long> commentsIds) {
+    public void deleteComments(@RequestParam List<Long> commentsIds) {
         commentsService.deleteComments(commentsIds);
     }
 }

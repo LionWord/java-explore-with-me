@@ -10,7 +10,10 @@ import java.util.List;
 public interface PrivateCommentsService {
 
     Comment sendComment(Long userId, Long eventId, CommentShortDto commentDto);
+
     CommentAmendRequest amendComment(Long userId, Long commentId, CommentAmend amend);
+
     void deleteComment(Long userId, Long commentId);
+
     List<Comment> getMyComments(Long userId, int from, int size);
 }

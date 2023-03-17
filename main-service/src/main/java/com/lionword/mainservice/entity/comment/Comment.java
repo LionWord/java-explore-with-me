@@ -1,7 +1,7 @@
 package com.lionword.mainservice.entity.comment;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.lionword.mainservice.entity.user.UserDto;
-import com.lionword.mainservice.entity.user.UserShortDto;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -31,10 +31,12 @@ public class Comment {
     @Column(name = "text")
     private String text;
     @Column(name = "publication_date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publicationDate;
     @Column(name = "amended")
     private boolean amended = false;
     @Column(name = "amendment_date")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime amendmentDate;
     @Enumerated(EnumType.STRING)
     @Column(name = "status")

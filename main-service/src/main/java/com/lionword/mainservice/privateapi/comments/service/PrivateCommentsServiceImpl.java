@@ -32,6 +32,7 @@ public class PrivateCommentsServiceImpl implements PrivateCommentsService {
         Comment comment = dtoToComment(commentDto, userId, eventId);
         return commentsRepo.save(comment);
     }
+
     @Override
     public CommentAmendRequest amendComment(Long userId, Long commentId, CommentAmend amend) {
         checkIfUserIsPresent(userId);
@@ -63,7 +64,6 @@ public class PrivateCommentsServiceImpl implements PrivateCommentsService {
         checkIfUserIsPresent(userId);
         return commentsRepo.findAllByUserId(userId, PageRequest.of(from, size)).getContent();
     }
-
 
 
     //-------------------------Service methods---------------------------
