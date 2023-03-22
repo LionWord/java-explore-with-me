@@ -69,6 +69,14 @@ public class ExceptionTemplates {
         );
     }
 
+    public static NoSuchEntryException commentNotFound() {
+        throw new NoSuchEntryException(
+                HttpStatus.NOT_FOUND,
+                "Comment not found",
+                "Comment entry was not found"
+        );
+    }
+
     public static NoSuchEntryException userNotFound() {
         throw new NoSuchEntryException(
                 HttpStatus.NOT_FOUND,
@@ -152,6 +160,25 @@ public class ExceptionTemplates {
                 "Can't execute request",
                 "Only initiator of event can get information about participation requests");
     }
+
+    public static void invalidAdminAction() {
+        throw new InvalidInputException(HttpStatus.BAD_REQUEST,
+                "Unknown action",
+                "There is no such admin action related to comments");
+    }
+
+    public static void commentAlreadyPublished() {
+        throw new AlreadyPublishedException(HttpStatus.CONFLICT,
+                "Comment is already published",
+                "Can't publish an comment that was already published");
+    }
+
+    public static void notCommentAuthor() {
+        throw new NotAuthorException(HttpStatus.CONFLICT,
+                "Can't execute request",
+                "Only comment's author can amend it");
+    }
+
 
 }
 

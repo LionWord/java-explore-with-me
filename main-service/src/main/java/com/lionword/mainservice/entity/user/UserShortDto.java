@@ -1,7 +1,10 @@
 package com.lionword.mainservice.entity.user;
 
-public interface UserShortDto {
-    long getId();
+import lombok.Getter;
+import lombok.Setter;
 
-    String getName();
+@Getter
+@Setter
+public class UserShortDto {
+    private String name;
 }
